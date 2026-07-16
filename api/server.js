@@ -175,6 +175,41 @@ app.post('/api/v1/webhook', express.raw({ type: 'application/json' }), async (re
   res.json({ received: true });
 });
 
+const publicLimits = new Map();
+const PUBLIC_LIMIT = 5;
+
+app.post('/api/v1/convert/public', async (req, res) => {
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || 'unknown';
+  const count = (publicLimits.get(ip) || 0) + 1;
+  if (count > PUBLIC_LIMIT) {
+    return res.status(429).json({ error: `Free web limit reached (${PUBLIC_LIMIT}/day). Get a free API key for more.` });
+  }
+  publicLimits.set(ip, count);
+  setTimeout(() => publicLimits.delete(ip), 86400000);
+
+  const { html, url } = req.body;
+  if (!html && !url) return res.status(400).json({ error: 'Provide html or url' });
+
+  let page;
+  try {
+    const b = await getBrowser();
+    page = await b.newPage();
+    await page.setViewportSize({ width: 794, height: 1123 });
+    if (url) await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    else await page.setContent(html, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(1000);
+
+    const pdf = await page.pdf({ format: 'A4', printBackground: true, margin: { top: '10mm', right: '10mm', bottom: '10mm', left: '10mm' } });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="output.pdf"');
+    res.send(pdf);
+  } catch (err) {
+    res.status(500).json({ error: 'Conversion failed', detail: err.message });
+  } finally {
+    if (page) await page.close();
+  }
+});
+
 app.use(express.static('../landing'));
 
 app.post('/api/v1/keys', (req, res) => {

@@ -22,18 +22,83 @@
     </div>
   </nav>
 
-  <section class="max-w-4xl mx-auto px-4 pt-20 pb-16 text-center">
-    <h1 class="text-5xl font-bold tracking-tight mb-4">Turn HTML into PDFs.<br/>One API call.</h1>
-    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Generate invoices, reports, certificates and receipts with a simple POST request. No servers, no config. Get your API key in 10 seconds.</p>
-    <div class="flex gap-3 justify-center">
-      <a href="#get-started" class="gradient text-white px-6 py-3 rounded-lg font-medium hover:opacity-90">Get Your API Key</a>
-      <a href="#docs" class="border border-gray-300 px-6 py-3 rounded-lg font-medium hover:border-indigo-400 text-gray-700">Read Docs</a>
+  <section class="max-w-4xl mx-auto px-4 pt-20 pb-8 text-center">
+    <h1 class="text-5xl font-bold tracking-tight mb-4">HTML to PDF.<br/>Free & instant.</h1>
+    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">Paste HTML, get a pixel-perfect PDF. No signup, no limits — just works.</p>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 pb-8">
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="p-1 bg-gray-50 border-b border-gray-200 flex gap-1 px-3">
+        <span class="w-3 h-3 rounded-full bg-red-400"></span>
+        <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+        <span class="w-3 h-3 rounded-full bg-green-400"></span>
+        <span class="text-xs text-gray-400 ml-2 font-mono">index.html</span>
+      </div>
+      <div class="grid md:grid-cols-2">
+        <div class="border-r border-gray-200">
+          <textarea id="html-input" rows="16" class="w-full p-4 text-sm font-mono outline-none resize-none bg-gray-50" placeholder="&lt;html&gt;
+  &lt;head&gt;&lt;style&gt;
+    h1 { color: #6366f1; }
+    .card { padding: 20px; border: 1px solid #ddd; }
+  &lt;/style&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Invoice #1234&lt;/h1&gt;
+    &lt;div class=&quot;card&quot;&gt;
+      &lt;p&gt;&lt;strong&gt;Item:&lt;/strong&gt; Web Development&lt;/p&gt;
+      &lt;p&gt;&lt;strong&gt;Amount:&lt;/strong&gt; $1,500.00&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;">&lt;html&gt;
+  &lt;head&gt;&lt;style&gt;
+    h1 { color: #6366f1; }
+    .card { padding: 20px; border: 1px solid #ddd; }
+  &lt;/style&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Invoice #1234&lt;/h1&gt;
+    &lt;div class="card"&gt;
+      &lt;p&gt;&lt;strong&gt;Item:&lt;/strong&gt; Web Development&lt;/p&gt;
+      &lt;p&gt;&lt;strong&gt;Amount:&lt;/strong&gt; $1,500.00&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</textarea>
+        </div>
+        <div class="bg-gray-50 p-4 flex flex-col items-center justify-center">
+          <div id="pdf-preview" class="w-full aspect-[210/297] bg-white border border-gray-200 rounded shadow-sm flex items-center justify-center text-gray-400 text-sm mb-4">
+            Your PDF preview will appear here
+          </div>
+          <button id="convert-btn" onclick="convertWeb()" class="gradient text-white px-8 py-3 rounded-xl font-medium hover:opacity-90 w-full text-center shadow-sm">
+            Convert to PDF →
+          </button>
+          <p id="convert-status" class="text-xs text-gray-400 mt-2"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-4 py-8 text-center">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="p-4">
+        <div class="text-2xl mb-2">📄</div>
+        <h3 class="font-semibold mb-1">Paste HTML</h3>
+        <p class="text-sm text-gray-500">Include any CSS, fonts, tables — Chromium renders it faithfully.</p>
+      </div>
+      <div class="p-4">
+        <div class="text-2xl mb-2">⚡</div>
+        <h3 class="font-semibold mb-1">Instant PDF</h3>
+        <p class="text-sm text-gray-500">No queues, no uploads. Direct download in seconds.</p>
+      </div>
+      <div class="p-4">
+        <div class="text-2xl mb-2">🔌</div>
+        <h3 class="font-semibold mb-1">Also an API</h3>
+        <p class="text-sm text-gray-500">Same engine, one curl command. Automate your workflows.</p>
+      </div>
     </div>
   </section>
 
   <section id="get-started" class="max-w-lg mx-auto px-4 py-16">
     <h2 class="text-2xl font-bold text-center mb-4">Get Your Free API Key</h2>
-    <p class="text-center text-gray-500 mb-8 text-sm">Enter your email and get a key instantly. No credit card needed.</p>
+    <p class="text-center text-gray-500 mb-8 text-sm">For developers who want to automate PDF generation.</p>
     <form id="signup-form" class="flex flex-col gap-4">
       <input id="signup-email" type="email" required placeholder="you@example.com" class="border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
       <button type="submit" class="gradient text-white rounded-lg py-3 font-medium hover:opacity-90">Generate Free API Key</button>
@@ -161,6 +226,39 @@
   </footer>
 
   <script>
+    async function convertWeb() {
+      const btn = document.getElementById('convert-btn');
+      const status = document.getElementById('convert-status');
+      const html = document.getElementById('html-input').value;
+      if (!html.trim()) { status.textContent = 'Paste some HTML first'; return; }
+
+      btn.disabled = true; btn.textContent = 'Converting...'; status.textContent = '';
+
+      try {
+        const res = await fetch('/api/v1/convert/public', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ html })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          status.textContent = err.error || 'Conversion failed';
+          btn.disabled = false; btn.textContent = 'Convert to PDF →';
+          return;
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'output.pdf';
+        a.click();
+        URL.revokeObjectURL(url);
+        status.textContent = '✅ PDF downloaded!';
+      } catch (e) {
+        status.textContent = 'Connection error';
+      }
+      btn.disabled = false; btn.textContent = 'Convert to PDF →';
+    }
+
     async function checkout(priceId) {
       const key = document.getElementById('apikey-display')?.value;
       const email = prompt('Enter your email to subscribe:');
