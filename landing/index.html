@@ -111,7 +111,7 @@
           <li>✓ Custom page options</li>
           <li>✓ Priority support</li>
         </ul>
-        <a href="#get-started" class="block text-center bg-white text-indigo-600 rounded-lg py-2 text-sm font-medium hover:bg-white/90">Get started free →</a>
+        <button onclick="checkout('price_1TtvRiBhAgkHq4wpHHUfAcmd')" class="w-full text-center bg-white text-indigo-600 rounded-lg py-2 text-sm font-medium hover:bg-white/90">Subscribe — $9/mo</button>
       </div>
       <div class="border border-gray-200 rounded-xl p-6 bg-white card transition-all">
         <h3 class="text-lg font-semibold mb-1">Business</h3>
@@ -123,7 +123,7 @@
           <li>✓ Custom wait times</li>
           <li>✓ SLA support</li>
         </ul>
-        <a href="#get-started" class="block text-center border border-gray-300 rounded-lg py-2 text-sm font-medium hover:border-indigo-400">Get started free →</a>
+        <button onclick="checkout('price_1TtvRkBhAgkHq4wp2ngRIywy')" class="w-full text-center border border-gray-300 rounded-lg py-2 text-sm font-medium hover:border-indigo-400">Subscribe — $29/mo</button>
       </div>
     </div>
   </section>
@@ -161,6 +161,20 @@
   </footer>
 
   <script>
+    async function checkout(priceId) {
+      const key = document.getElementById('apikey-display')?.value;
+      const email = prompt('Enter your email to subscribe:');
+      if (!email) return;
+      const res = await fetch('/api/v1/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price_id: priceId, email, api_key: key !== 'Get a key to see it here' ? key : '' })
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else alert('Error: ' + (data.error || 'Could not create checkout'));
+    }
+
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('signup-email').value.trim();

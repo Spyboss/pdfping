@@ -4,6 +4,7 @@ const { chromium } = require('playwright');
 const cors = require('cors');
 const helmet = require('helmet');
 const crypto = require('crypto');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -117,6 +118,61 @@ app.get('/api/v1/usage', authenticate, (req, res) => {
     used: req.apiKey.used,
     remaining: req.apiKey.limit - req.apiKey.used
   });
+});
+
+app.post('/api/v1/checkout', express.json(), async (req, res) => {
+  const { price_id, email, api_key } = req.body;
+  if (!price_id || !email) {
+    return res.status(400).json({ error: 'price_id and email are required' });
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      payment_method_types: ['card'],
+      line_items: [{ price: price_id, quantity: 1 }],
+      customer_email: email,
+      metadata: { api_key: api_key || '' },
+      success_url: `${req.headers.origin || 'https://pdfapi.uhadev.com'}/?api_key=${api_key || ''}&checkout=success`,
+      cancel_url: `${req.headers.origin || 'https://pdfapi.uhadev.com'}/#pricing`,
+    });
+    res.json({ url: session.url });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/v1/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    return res.status(400).json({ error: `Webhook error: ${err.message}` });
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const email = session.customer_details?.email;
+    const apiKey = session.metadata?.api_key;
+    const priceId = session.line_items?.data?.[0]?.price?.id;
+
+    let plan = 'free';
+    let limit = 10;
+    if (priceId === 'price_1TtvRiBhAgkHq4wpHHUfAcmd') { plan = 'pro'; limit = 500; }
+    if (priceId === 'price_1TtvRkBhAgkHq4wp2ngRIywy') { plan = 'business'; limit = 5000; }
+
+    if (apiKey && apiKeys.has(apiKey)) {
+      const k = apiKeys.get(apiKey);
+      k.plan = plan;
+      k.limit = limit;
+      k.stripeCustomerId = session.customer;
+      apiKeys.set(apiKey, k);
+      console.log(`Upgraded ${email} to ${plan} (API key: ${apiKey})`);
+    }
+  }
+
+  res.json({ received: true });
 });
 
 app.use(express.static('../landing'));
