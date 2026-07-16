@@ -15,6 +15,7 @@ async function getBrowser() {
   if (!browser) {
     browser = await chromium.launch({
       headless: true,
+      executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--single-process']
     });
   }
