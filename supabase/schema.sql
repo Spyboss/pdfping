@@ -3,10 +3,10 @@ create table if not exists api_keys (
   id uuid primary key default gen_random_uuid(),
   key text unique not null,
   email text not null,
-  plan text not null default 'free' check (plan in ('free', 'pro', 'business')),
+  plan text not null default 'free' check (plan in ('free', 'pro')),
   limit_count integer not null default 10,
   used_count integer not null default 0,
-  stripe_customer_id text,
+  lemonsqueezy_customer_id text,
   created_at timestamptz default now()
 );
 
@@ -30,5 +30,19 @@ language plpgsql
 as $$
 begin
   update api_keys set used_count = 0;
+end;
+$$;
+
+-- Increment helper for usage tracking
+create or replace function increment(api_key_id uuid)
+returns int
+language plpgsql
+as $$
+declare
+  current int;
+begin
+  select used_count into current from api_keys where id = api_key_id;
+  update api_keys set used_count = current + 1 where id = api_key_id;
+  return current + 1;
 end;
 $$;

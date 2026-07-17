@@ -1,6 +1,6 @@
 # PDFPing — PDF Generation API
 
-Turn HTML or URLs into PDFs with one API call. Uses real Chromium rendering.
+Pass HTML or a URL, get a PDF back. Powered by Chromium via Playwright.
 
 ## Quick Start
 
@@ -25,7 +25,7 @@ railway up
 ```
 
 ### Render
-Connect this repo, set build command to `docker build -t pdfping ./api` and start command to `docker run -p 3000:3000 pdfping`.
+Connect repo, set build command `docker build -t pdfping ./api`, start command `docker run -p 3000:3000 pdfping`.
 
 ## API
 
@@ -47,10 +47,9 @@ Content-Type: application/json
 ## Pricing
 - Free: 10 conversions/mo
 - Pro: $9/mo — 500 conversions
-- Business: $29/mo — 5,000 conversions
 
 ## Stacks
 - Express + Playwright (Node.js)
 - Supabase (auth, usage tracking)
-- Stripe (payments)
+- Lemon Squeezy (payments)
 - Docker + Railway/Render (hosting)
