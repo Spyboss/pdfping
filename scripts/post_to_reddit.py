@@ -31,9 +31,8 @@ What it does:
 - Real Chromium rendering (all CSS, fonts, images work)
 - Free tier: 10 conversions/month (no credit card)
 - Pro: $9/mo (500 conversions)
-- Business: $29/mo (5000 conversions)
 
-Built with Express + Playwright + Stripe, deployed on Railway.
+Built with Express + Playwright + Lemon Squeezy, deployed on Railway.
 
 Would love any feedback — especially on pricing and docs. What would make this useful for your workflow?
 """,
