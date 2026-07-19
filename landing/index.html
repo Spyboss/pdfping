@@ -12,12 +12,18 @@
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://pdfapi.uhadev.com/" />
     <meta property="og:title" content="PDFPing - HTML to PDF API" />
-    <meta property="og:description" content="Convert HTML to PDF with one POST request. Chromium-powered rendering." />
+    <meta
+      property="og:description"
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering."
+    />
     <meta property="og:url" content="https://pdfapi.uhadev.com/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="PDFPing - HTML to PDF API" />
-    <meta name="twitter:description" content="Convert HTML to PDF with one POST request. Chromium-powered rendering." />
+    <meta
+      name="twitter:description"
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering."
+    />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -31,8 +37,18 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" /></noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <noscript
+      ><link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    /></noscript>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
       :root {
         --bg: #0b0b0e;
@@ -46,58 +62,122 @@
         --code-bg: #1a1a20;
         --green: #22c55e;
         --amber: #f59e0b;
+        --red: #ef4444;
         --radius: 10px;
       }
-
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
       body {
         background: var(--bg);
         color: var(--text);
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: "Inter", system-ui, sans-serif;
         font-size: 14px;
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
       }
-
-      .font-mono { font-family: 'JetBrains Mono', monospace; }
-
+      .font-mono {
+        font-family: "JetBrains Mono", monospace;
+      }
       .container {
         max-width: 1040px;
         margin: 0 auto;
         padding: 0 20px;
       }
 
-      /* ── Nav ── */
       nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 20px 0;
       }
-
       .logo {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-weight: 700;
         font-size: 18px;
         letter-spacing: -0.3px;
       }
-      .logo span { color: var(--accent); }
-
+      .logo span {
+        color: var(--accent);
+      }
       .nav-links {
         display: flex;
+        align-items: center;
         gap: 24px;
       }
-      .nav-links a {
+      .nav-links a,
+      .nav-links button {
         color: var(--text-secondary);
         text-decoration: none;
         font-size: 13px;
         font-weight: 500;
         transition: color 0.15s;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
       }
-      .nav-links a:hover { color: var(--text); }
+      .nav-links a:hover,
+      .nav-links button:hover {
+        color: var(--text);
+      }
+      .nav-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+        border: 1px solid var(--border);
+      }
+      .nav-dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .nav-dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 36px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 4px;
+        min-width: 160px;
+        display: none;
+        z-index: 50;
+      }
+      .nav-dropdown-menu.open {
+        display: block;
+      }
+      .nav-dropdown-menu a,
+      .nav-dropdown-menu button {
+        display: block;
+        padding: 8px 12px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 13px;
+        border-radius: 6px;
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .nav-dropdown-menu a:hover,
+      .nav-dropdown-menu button:hover {
+        background: var(--bg);
+        color: var(--text);
+      }
+      .nav-dropdown-menu .danger {
+        color: var(--red);
+      }
+      .nav-dropdown-menu .danger:hover {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--red);
+      }
 
-      /* ── Converter ── */
       .converter {
         margin: 40px 0 24px;
         border: 1px solid var(--border);
@@ -105,7 +185,6 @@
         overflow: hidden;
         background: var(--surface);
       }
-
       .converter-header {
         display: flex;
         align-items: center;
@@ -114,39 +193,44 @@
         background: var(--surface);
         border-bottom: 1px solid var(--border);
       }
-
       .converter-dot {
         width: 10px;
         height: 10px;
         border-radius: 50%;
       }
-      .converter-dot:nth-child(1) { background: #ef4444; }
-      .converter-dot:nth-child(2) { background: #eab308; }
-      .converter-dot:nth-child(3) { background: #22c55e; }
-
+      .converter-dot:nth-child(1) {
+        background: #ef4444;
+      }
+      .converter-dot:nth-child(2) {
+        background: #eab308;
+      }
+      .converter-dot:nth-child(3) {
+        background: #22c55e;
+      }
       .converter-tab {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 11px;
         color: var(--text-secondary);
         margin-left: 8px;
       }
-
       .converter-body {
         display: grid;
         grid-template-columns: 1fr 1fr;
       }
-
       @media (max-width: 720px) {
-        .converter-body { grid-template-columns: 1fr; }
+        .converter-body {
+          grid-template-columns: 1fr;
+        }
       }
-
       .converter-input {
         border-right: 1px solid var(--border);
       }
       @media (max-width: 720px) {
-        .converter-input { border-right: none; border-bottom: 1px solid var(--border); }
+        .converter-input {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
       }
-
       .converter-input textarea {
         width: 100%;
         height: 340px;
@@ -156,13 +240,14 @@
         outline: none;
         resize: none;
         color: var(--text);
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         line-height: 1.7;
         tab-size: 2;
       }
-      .converter-input textarea::placeholder { color: #3f3f46; }
-
+      .converter-input textarea::placeholder {
+        color: #3f3f46;
+      }
       .converter-output {
         background: var(--paper);
         display: flex;
@@ -172,7 +257,6 @@
         padding: 16px;
         min-height: 340px;
       }
-
       #pdf-preview {
         display: none;
         width: 100%;
@@ -182,7 +266,6 @@
         height: 300px;
         border-radius: 4px;
       }
-
       #pdf-placeholder {
         width: 100%;
         max-width: 200px;
@@ -195,26 +278,30 @@
         justify-content: center;
         color: #a1a1aa;
         font-size: 12px;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         text-align: center;
         padding: 20px;
       }
-
       .convert-btn {
         grid-column: 1 / -1;
         padding: 12px 24px;
         background: linear-gradient(135deg, var(--accent), var(--accent-end));
         color: #fff;
         border: none;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-weight: 500;
         font-size: 13px;
         cursor: pointer;
         transition: opacity 0.15s;
         width: 100%;
       }
-      .convert-btn:hover { opacity: 0.9; }
-      .convert-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .convert-btn:hover {
+        opacity: 0.9;
+      }
+      .convert-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
       #convert-status {
         grid-column: 1 / -1;
         text-align: center;
@@ -225,20 +312,20 @@
         border-top: 1px solid var(--border);
       }
 
-      /* ── Tagline ── */
       .tagline {
         text-align: center;
         font-size: 13px;
         color: var(--text-secondary);
         margin-bottom: 48px;
       }
-      .tagline span { color: var(--accent); }
-
-      /* ── Sections ── */
-      section { padding: 48px 0; }
-
+      .tagline span {
+        color: var(--accent);
+      }
+      section {
+        padding: 48px 0;
+      }
       .section-label {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -246,17 +333,18 @@
         margin-bottom: 16px;
       }
 
-      /* ── Features ── */
       .features {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 32px;
       }
       @media (max-width: 640px) {
-        .features { grid-template-columns: 1fr; }
+        .features {
+          grid-template-columns: 1fr;
+        }
       }
       .feature h3 {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 13px;
         font-weight: 500;
         margin-bottom: 6px;
@@ -268,31 +356,36 @@
         line-height: 1.6;
       }
 
-      /* ── API ── */
       .code-block {
         background: var(--code-bg);
         border: 1px solid var(--border);
         border-radius: var(--radius);
         padding: 20px;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         line-height: 1.8;
         overflow-x: auto;
         color: #d4d4d8;
       }
-      .code-block .comment { color: #52525b; }
-      .code-block .url { color: var(--accent); }
+      .code-block .comment {
+        color: #52525b;
+      }
+      .code-block .url {
+        color: var(--accent);
+      }
 
-      /* ── Pricing ── */
       .pricing-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 16px;
+        max-width: 680px;
+        margin: 0 auto;
       }
       @media (max-width: 640px) {
-        .pricing-grid { grid-template-columns: 1fr; }
+        .pricing-grid {
+          grid-template-columns: 1fr;
+        }
       }
-
       .plan {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -310,7 +403,7 @@
         right: 16px;
         background: var(--amber);
         color: #0b0b0e;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 10px;
         font-weight: 600;
         padding: 3px 10px;
@@ -318,13 +411,13 @@
         letter-spacing: 0.5px;
       }
       .plan-name {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 13px;
         font-weight: 500;
         margin-bottom: 4px;
       }
       .plan-price {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 32px;
         font-weight: 700;
         margin-bottom: 4px;
@@ -349,7 +442,7 @@
         padding: 4px 0;
       }
       .plan ul li::before {
-        content: '→';
+        content: "→";
         color: var(--accent);
         margin-right: 8px;
       }
@@ -358,7 +451,7 @@
         width: 100%;
         padding: 10px;
         border-radius: 6px;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         font-weight: 500;
         cursor: pointer;
@@ -369,15 +462,18 @@
         text-align: center;
         text-decoration: none;
       }
-      .plan-btn:hover { border-color: var(--accent); }
+      .plan-btn:hover {
+        border-color: var(--accent);
+      }
       .plan.featured .plan-btn {
         background: var(--accent);
         border-color: var(--accent);
         color: #fff;
       }
-      .plan.featured .plan-btn:hover { opacity: 0.9; }
+      .plan.featured .plan-btn:hover {
+        opacity: 0.9;
+      }
 
-      /* ── Dashboard ── */
       .dashboard-card {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -397,7 +493,7 @@
         text-align: center;
       }
       .stat-value {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 24px;
         font-weight: 700;
       }
@@ -406,7 +502,6 @@
         color: var(--text-secondary);
         margin-top: 2px;
       }
-
       .key-input-group {
         display: flex;
         gap: 8px;
@@ -418,11 +513,13 @@
         border-radius: 6px;
         padding: 10px 12px;
         color: var(--text);
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         outline: none;
       }
-      .key-input-group input:focus { border-color: var(--accent); }
+      .key-input-group input:focus {
+        border-color: var(--accent);
+      }
       .key-input-group button {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -431,38 +528,47 @@
         color: var(--text);
         font-size: 12px;
         cursor: pointer;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         transition: border-color 0.15s;
       }
-      .key-input-group button:hover { border-color: var(--accent); }
+      .key-input-group button:hover {
+        border-color: var(--accent);
+      }
 
-      /* ── Signup ── */
-      .signup-box {
+      .auth-page {
         max-width: 400px;
-        margin: 0 auto;
+        margin: 40px auto;
+      }
+      .auth-box {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius);
         padding: 32px;
-        text-align: center;
       }
-      .signup-box h2 {
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 16px;
+      .auth-box h2 {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
         font-weight: 600;
         margin-bottom: 4px;
+        text-align: center;
       }
-      .signup-box p {
+      .auth-box p.sub {
         font-size: 13px;
         color: var(--text-secondary);
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        text-align: center;
       }
-      .signup-box form {
+      .auth-box form {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
       }
-      .signup-box input {
+      .auth-box label {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+      .auth-box input {
         background: var(--bg);
         border: 1px solid var(--border);
         border-radius: 6px;
@@ -470,84 +576,127 @@
         color: var(--text);
         font-size: 13px;
         outline: none;
+        width: 100%;
       }
-      .signup-box input:focus { border-color: var(--accent); }
-      .signup-box button {
+      .auth-box input:focus {
+        border-color: var(--accent);
+      }
+      .auth-box .btn-primary {
         padding: 10px;
         border-radius: 6px;
         background: linear-gradient(135deg, var(--accent), var(--accent-end));
         color: #fff;
         border: none;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         font-weight: 500;
         cursor: pointer;
         transition: opacity 0.15s;
       }
-      .signup-box button:hover { opacity: 0.9; }
-      .signup-box button:disabled { opacity: 0.5; }
-
-      #key-result {
-        margin-top: 20px;
-        padding: 16px;
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid var(--green);
-        border-radius: 6px;
-        text-align: left;
+      .auth-box .btn-primary:hover {
+        opacity: 0.9;
       }
-      #key-result p {
+      .auth-box .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .auth-box .auth-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 16px 0;
+        color: var(--text-secondary);
         font-size: 12px;
-        font-weight: 500;
-        margin-bottom: 8px;
-        color: var(--green);
       }
-      #key-result code {
-        display: block;
+      .auth-box .auth-divider::before,
+      .auth-box .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+      .auth-box .btn-google {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 6px;
         background: var(--bg);
         border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 8px 10px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11px;
-        word-break: break-all;
         color: var(--text);
-        margin-bottom: 8px;
-      }
-      #key-result .copy-link {
-        font-size: 12px;
-        color: var(--accent);
+        font-size: 13px;
+        font-weight: 500;
         cursor: pointer;
-        background: none;
-        border: none;
+        transition: border-color 0.15s;
+        width: 100%;
         font-family: inherit;
       }
-      #key-result .copy-link:hover { text-decoration: underline; }
-      #key-result .note {
-        font-size: 11px;
-        color: var(--text-secondary);
-        margin-top: 8px;
-        margin-bottom: 0;
+      .auth-box .btn-google:hover {
+        border-color: var(--accent);
       }
-
-      /* ── Footer ── */
-      footer {
-        border-top: 1px solid var(--border);
-        padding: 24px 0;
+      .auth-box .btn-google svg {
+        width: 18px;
+        height: 18px;
+      }
+      .auth-box .auth-footer {
         text-align: center;
-        font-size: 12px;
+        margin-top: 16px;
+        font-size: 13px;
         color: var(--text-secondary);
       }
-      footer a { color: var(--text-secondary); text-decoration: none; }
-      footer a:hover { color: var(--text); }
+      .auth-box .auth-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .auth-box .auth-footer a:hover {
+        text-decoration: underline;
+      }
+      .auth-error {
+        font-size: 12px;
+        color: var(--red);
+        text-align: center;
+        margin-top: 8px;
+        display: none;
+      }
+      .auth-error.visible {
+        display: block;
+      }
 
-      /* ── Smooth scroll ── */
-      html { scroll-behavior: smooth; }
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 13px;
+        z-index: 200;
+        display: none;
+        max-width: 360px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      }
+      .toast.visible {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .toast.success {
+        border-color: var(--green);
+      }
+      .toast.error {
+        border-color: var(--red);
+      }
+      .toast .toast-icon {
+        font-size: 16px;
+      }
 
-      /* ── Checkout modal ── */
       .modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0, 0, 0, 0.6);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -559,9 +708,10 @@
         border-radius: var(--radius);
         padding: 24px;
         width: 340px;
+        max-width: 90vw;
       }
       .modal-box h3 {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 14px;
         margin-bottom: 4px;
       }
@@ -581,7 +731,9 @@
         outline: none;
         margin-bottom: 10px;
       }
-      .modal-box input:focus { border-color: var(--accent); }
+      .modal-box input:focus {
+        border-color: var(--accent);
+      }
       .modal-actions {
         display: flex;
         gap: 8px;
@@ -590,7 +742,7 @@
         flex: 1;
         padding: 10px;
         border-radius: 6px;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         font-weight: 500;
         cursor: pointer;
@@ -604,19 +756,42 @@
         border-color: var(--accent);
         color: #fff;
       }
-      .modal-actions button:hover { opacity: 0.9; }
+      .modal-actions button:hover {
+        opacity: 0.9;
+      }
       .modal-error {
         font-size: 12px;
         color: #ef4444;
         margin-top: 8px;
       }
 
-      /* ── Hidden ── */
-      .hidden { display: none !important; }
-
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 0;
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      footer a {
+        color: var(--text-secondary);
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: var(--text);
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      .hidden {
+        display: none !important;
+      }
       @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        * { transition-duration: 0s !important; }
+        html {
+          scroll-behavior: auto;
+        }
+        * {
+          transition-duration: 0s !important;
+        }
       }
     </style>
   </head>
@@ -627,192 +802,412 @@
         <div class="nav-links">
           <a href="#pricing">Pricing</a>
           <a href="#docs">Docs</a>
-          <a href="#dashboard">Dashboard</a>
+          <a href="#dashboard" id="nav-dashboard" class="hidden">Dashboard</a>
+          <a href="#login" id="nav-signin">Sign In</a>
+          <div id="nav-user" class="nav-dropdown hidden">
+            <img
+              id="nav-avatar"
+              class="nav-avatar"
+              onclick="toggleDropdown()"
+            />
+            <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+              <a href="#dashboard">Dashboard</a>
+              <button class="danger" onclick="signOut()">Sign Out</button>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <div class="converter">
-        <div class="converter-header">
-          <span class="converter-dot"></span>
-          <span class="converter-dot"></span>
-          <span class="converter-dot"></span>
-          <span class="converter-tab">index.html</span>
-        </div>
-        <div class="converter-body">
-          <div class="converter-input">
-            <textarea id="html-input" rows="16" placeholder='&lt;html&gt;
-  &lt;head&gt;&lt;style&gt;
+      <div id="screen-home">
+        <div class="converter">
+          <div class="converter-header">
+            <span class="converter-dot"></span
+            ><span class="converter-dot"></span
+            ><span class="converter-dot"></span>
+            <span class="converter-tab">index.html</span>
+          </div>
+          <div class="converter-body">
+            <div class="converter-input">
+              <textarea
+                id="html-input"
+                rows="16"
+                placeholder='<html>
+  <head><style>
     h1 { color: #6366f1; }
     .card { padding: 20px; border: 1px solid #ddd; }
-  &lt;/style&gt;&lt;/head&gt;
-  &lt;body&gt;
-    &lt;h1&gt;Invoice #1234&lt;/h1&gt;
-    &lt;div class="card"&gt;
-      &lt;p&gt;&lt;strong&gt;Item:&lt;/strong&gt; Web Development&lt;/p&gt;
-      &lt;p&gt;&lt;strong&gt;Amount:&lt;/strong&gt; $1,500.00&lt;/p&gt;
-    &lt;/div&gt;
-  &lt;/body&gt;
-&lt;/html&gt;'></textarea>
-          </div>
-          <div class="converter-output">
-            <div id="pdf-preview">
-              <embed id="pdf-embed" type="application/pdf" />
+  </style></head>
+  <body>
+    <h1>Invoice #1234</h1>
+    <div class="card">
+      <p><strong>Item:</strong> Web Development</p>
+      <p><strong>Amount:</strong> $1,500.00</p>
+    </div>
+  </body>
+</html>'
+              ></textarea>
             </div>
-            <div id="pdf-placeholder">
-              PDF preview
+            <div class="converter-output">
+              <div id="pdf-preview">
+                <embed id="pdf-embed" type="application/pdf" />
+              </div>
+              <div id="pdf-placeholder">PDF preview</div>
             </div>
           </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr auto;">
-          <button id="convert-btn" onclick="convertWeb()" class="convert-btn" style="border-radius:0;">
-            Convert to PDF
-          </button>
-          <button id="download-btn" onclick="downloadPdf()" class="convert-btn" style="border-radius:0;border-left:1px solid rgba(255,255,255,0.2);display:none;width:auto;padding:12px 20px;">
-            Download
-          </button>
-        </div>
-        <div id="convert-status"></div>
-      </div>
-
-      <p class="tagline">
-        Paste HTML. <span>Get a PDF.</span> One request.
-      </p>
-
-      <section>
-        <div class="features">
-          <div class="feature">
-            <h3>Full Chromium rendering</h3>
-            <p>CSS, fonts, images - everything renders as it would in a browser. No quirks, no surprises.</p>
-          </div>
-          <div class="feature">
-            <h3>One POST request</h3>
-            <p>Send HTML or a URL, get a PDF back. No queues, no polling, no SDK required.</p>
-          </div>
-          <div class="feature">
-            <h3>Usage dashboard</h3>
-            <p>See your conversions in real time. Know your limits and upgrade when you need to.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="docs">
-        <div class="section-label">API</div>
-        <div class="code-block">
-          <div class="comment"># Convert HTML to PDF</div>
-          <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span> \</div>
-          <div>  -H <span class="url">"Authorization: Bearer YOUR_API_KEY"</span> \</div>
-          <div>  -H "Content-Type: application/json" \</div>
-          <div>  -d '{ "html": "&lt;h1&gt;Hello World&lt;/h1&gt;" }' \</div>
-          <div>  -o output.pdf</div>
-          <br/>
-          <div class="comment"># Or convert a URL</div>
-          <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span> \</div>
-          <div>  -H <span class="url">"Authorization: Bearer YOUR_API_KEY"</span> \</div>
-          <div>  -H "Content-Type: application/json" \</div>
-          <div>  -d '{ "url": "https://example.com" }' \</div>
-          <div>  -o page.pdf</div>
-        </div>
-      </section>
-
-      <section id="pricing">
-        <div class="section-label">Pricing</div>
-        <div class="pricing-grid">
-          <div class="plan">
-            <div class="plan-name">Free</div>
-            <div class="plan-price">$0</div>
-            <div class="plan-limit">10 conversions / month</div>
-            <ul>
-              <li>HTML to PDF</li>
-              <li>URL to PDF</li>
-              <li>Chromium rendering</li>
-              <li>Basic support</li>
-            </ul>
-            <a href="#signup" class="plan-btn">Get free key →</a>
-          </div>
-          <div class="plan featured">
-            <div class="popular-badge">POPULAR</div>
-            <div class="plan-name">Pro</div>
-            <div class="plan-price">$9 <span>/mo</span></div>
-            <div class="plan-limit">500 conversions / month</div>
-            <ul>
-              <li>Everything in Free</li>
-              <li>500 conversions / mo</li>
-              <li>Custom page options</li>
-              <li>Priority support</li>
-            </ul>
-            <button onclick="checkout('pro')" class="plan-btn">Subscribe $9/mo</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="dashboard">
-        <div class="section-label">Dashboard</div>
-        <div class="dashboard-card">
-          <label style="font-size:12px;color:var(--text-secondary);display:block;margin-bottom:6px;">API Key</label>
-          <div class="key-input-group">
-            <input
-              id="apikey-display"
-              type="text"
-              placeholder="Paste your API key"
-            />
-            <button onclick="lookupUsage()">Check</button>
-            <button onclick="navigator.clipboard.writeText(document.getElementById('apikey-display').value)">
-              Copy
+          <div style="display: grid; grid-template-columns: 1fr auto">
+            <button
+              id="convert-btn"
+              onclick="convertWeb()"
+              class="convert-btn"
+              style="border-radius: 0"
+            >
+              Convert to PDF
+            </button>
+            <button
+              id="download-btn"
+              onclick="downloadPdf()"
+              class="convert-btn"
+              style="
+                border-radius: 0;
+                border-left: 1px solid rgba(255, 255, 255, 0.2);
+                display: none;
+                width: auto;
+                padding: 12px 20px;
+              "
+            >
+              Download
             </button>
           </div>
-          <div class="dashboard-stats">
-            <div class="stat">
-              <div id="used-count" class="stat-value">0</div>
-              <div class="stat-label">Used</div>
-            </div>
-            <div class="stat">
-              <div id="limit-display" class="stat-value">10</div>
-              <div class="stat-label">Limit</div>
-            </div>
-            <div class="stat">
-              <div id="remaining-display" class="stat-value" style="color:var(--green)">10</div>
-              <div class="stat-label">Remaining</div>
-            </div>
-          </div>
+          <div id="convert-status"></div>
         </div>
-      </section>
 
-      <section id="signup">
-        <div class="signup-box">
-          <h2>Get your API key</h2>
-          <p>Enter your email and we'll generate a key instantly.</p>
-          <form id="signup-form">
-            <input
-              id="signup-email"
-              type="email"
-              required
-              placeholder="you@example.com"
-            />
-            <button type="submit">Generate API key</button>
-          </form>
-          <div id="key-result" class="hidden">
-            <p>Your API key</p>
-            <code id="generated-key"></code>
-            <button onclick="copyKey()" class="copy-link">Copy to clipboard</button>
-            <p class="note">Save this key. You won't see it again.</p>
-            <button onclick="goToDashboard()" class="copy-link" style="display:block;margin-top:8px;">Go to Dashboard</button>
+        <p class="tagline">Paste HTML. <span>Get a PDF.</span> One request.</p>
+
+        <section>
+          <div class="features">
+            <div class="feature">
+              <h3>Full Chromium rendering</h3>
+              <p>
+                CSS, fonts, images - everything renders as it would in a
+                browser. No quirks, no surprises.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>One POST request</h3>
+              <p>
+                Send HTML or a URL, get a PDF back. No queues, no polling, no
+                SDK required.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Usage dashboard</h3>
+              <p>
+                See your conversions in real time. Know your limits and upgrade
+                when you need to.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="docs">
+          <div class="section-label">API</div>
+          <div class="code-block">
+            <div class="comment"># Convert HTML to PDF</div>
+            <div>
+              curl -X POST
+              <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span>
+              \
+            </div>
+            <div>
+              -H <span class="url">"Authorization: Bearer YOUR_API_KEY"</span> \
+            </div>
+            <div>-H "Content-Type: application/json" \</div>
+            <div>-d '{ "html": "&lt;h1&gt;Hello World&lt;/h1&gt;" }' \</div>
+            <div>-o output.pdf</div>
+            <br />
+            <div class="comment"># Or convert a URL</div>
+            <div>
+              curl -X POST
+              <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span>
+              \
+            </div>
+            <div>
+              -H <span class="url">"Authorization: Bearer YOUR_API_KEY"</span> \
+            </div>
+            <div>-H "Content-Type: application/json" \</div>
+            <div>-d '{ "url": "https://example.com" }' \</div>
+            <div>-o page.pdf</div>
+          </div>
+        </section>
+
+        <section id="pricing">
+          <div class="section-label">Pricing</div>
+          <div class="pricing-grid">
+            <div class="plan">
+              <div class="plan-name">Free</div>
+              <div class="plan-price">$0</div>
+              <div class="plan-limit">10 conversions / month</div>
+              <ul>
+                <li>HTML to PDF</li>
+                <li>URL to PDF</li>
+                <li>Chromium rendering</li>
+                <li>Basic support</li>
+              </ul>
+              <a href="#signup" class="plan-btn">Get free key →</a>
+            </div>
+            <div class="plan featured">
+              <div class="popular-badge">POPULAR</div>
+              <div class="plan-name">Pro</div>
+              <div class="plan-price">$9 <span>/mo</span></div>
+              <div class="plan-limit">500 conversions / month</div>
+              <ul>
+                <li>Everything in Free</li>
+                <li>500 conversions / mo</li>
+                <li>Custom page options</li>
+                <li>Priority support</li>
+              </ul>
+              <button onclick="checkout('pro')" class="plan-btn">
+                Subscribe $9/mo
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="screen-login" class="hidden">
+        <div class="auth-page">
+          <div class="auth-box">
+            <h2>Welcome back</h2>
+            <p class="sub">Sign in to your PDFPing account</p>
+            <form id="login-form">
+              <div>
+                <label for="login-email">Email</label>
+                <input
+                  id="login-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+              <div>
+                <label for="login-password">Password</label>
+                <input
+                  id="login-password"
+                  type="password"
+                  placeholder="Enter your password"
+                  required
+                  autocomplete="current-password"
+                />
+              </div>
+              <button type="submit" class="btn-primary" id="login-btn">
+                Sign In
+              </button>
+              <div class="auth-error" id="login-error"></div>
+            </form>
+            <div class="auth-divider">or</div>
+            <button class="btn-google" onclick="signInWithGoogle()">
+              <svg viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              Continue with Google
+            </button>
+            <div class="auth-footer">
+              Don't have an account?
+              <a onclick="showScreen('signup')">Sign up</a>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      <div id="screen-signup" class="hidden">
+        <div class="auth-page">
+          <div class="auth-box">
+            <h2>Create your account</h2>
+            <p class="sub">Get your free API key in seconds</p>
+            <form id="signup-form">
+              <div>
+                <label for="signup-email">Email</label>
+                <input
+                  id="signup-email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+              <div>
+                <label for="signup-password">Password</label>
+                <input
+                  id="signup-password"
+                  type="password"
+                  placeholder="Create a password (min 6 chars)"
+                  required
+                  minlength="6"
+                  autocomplete="new-password"
+                />
+              </div>
+              <button type="submit" class="btn-primary" id="signup-btn">
+                Create Account
+              </button>
+              <div class="auth-error" id="signup-error"></div>
+            </form>
+            <div class="auth-divider">or</div>
+            <button class="btn-google" onclick="signInWithGoogle()">
+              <svg viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              Continue with Google
+            </button>
+            <div class="auth-footer">
+              Already have an account?
+              <a onclick="showScreen('login')">Sign in</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="screen-dashboard" class="hidden">
+        <section>
+          <div class="section-label">Dashboard</div>
+          <div class="dashboard-card" style="margin-bottom: 16px">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+              "
+              id="dashboard-user"
+            >
+              <img
+                id="dashboard-avatar"
+                style="
+                  width: 40px;
+                  height: 40px;
+                  border-radius: 50%;
+                  border: 1px solid var(--border);
+                  display: none;
+                "
+              />
+              <div>
+                <div
+                  id="dashboard-name"
+                  style="font-weight: 600; font-size: 14px"
+                ></div>
+                <div
+                  id="dashboard-email"
+                  style="font-size: 12px; color: var(--text-secondary)"
+                ></div>
+              </div>
+            </div>
+            <label
+              style="
+                font-size: 12px;
+                color: var(--text-secondary);
+                display: block;
+                margin-bottom: 6px;
+              "
+              >API Key</label
+            >
+            <div class="key-input-group">
+              <input id="apikey-display" type="text" readonly />
+              <button onclick="copyApiKey()">Copy</button>
+              <button onclick="regenerateKey()">Regenerate</button>
+            </div>
+            <div class="dashboard-stats">
+              <div class="stat">
+                <div id="used-count" class="stat-value">-</div>
+                <div class="stat-label">Used</div>
+              </div>
+              <div class="stat">
+                <div id="limit-display" class="stat-value">-</div>
+                <div class="stat-label">Limit</div>
+              </div>
+              <div class="stat">
+                <div
+                  id="remaining-display"
+                  class="stat-value"
+                  style="color: var(--green)"
+                >
+                  -
+                </div>
+                <div class="stat-label">Remaining</div>
+              </div>
+            </div>
+          </div>
+          <button
+            onclick="checkout('pro')"
+            class="plan-btn"
+            style="max-width: 200px"
+          >
+            Upgrade to Pro →
+          </button>
+        </section>
+      </div>
     </div>
 
-    <div id="checkout-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeCheckout()">
+    <div
+      id="checkout-modal"
+      class="modal-overlay hidden"
+      onclick="if (event.target === this) closeCheckout();"
+    >
       <div class="modal-box" onclick="event.stopPropagation()">
         <h3 id="checkout-plan-label">Subscribe to Pro</h3>
         <p>Enter your email and API key to get started.</p>
         <input id="checkout-email" type="email" placeholder="you@example.com" />
-        <input id="checkout-apikey" type="text" placeholder="Your API key (pdfping_...)" />
+        <input
+          id="checkout-apikey"
+          type="text"
+          placeholder="Your API key (pdfping_...)"
+          readonly
+        />
         <div class="modal-actions">
           <button onclick="closeCheckout()">Cancel</button>
-          <button id="checkout-submit" class="primary" onclick="submitCheckout()">Subscribe</button>
+          <button
+            id="checkout-submit"
+            class="primary"
+            onclick="submitCheckout()"
+          >
+            Subscribe
+          </button>
         </div>
         <div id="checkout-error" class="modal-error hidden"></div>
       </div>
+    </div>
+
+    <div id="toast" class="toast">
+      <span class="toast-icon" id="toast-icon"></span>
+      <span id="toast-message"></span>
     </div>
 
     <footer>
@@ -822,7 +1217,285 @@
     </footer>
 
     <script>
+      let supabase = null;
       let lastPdfBlob = null;
+      let currentPlan = null;
+      let currentUser = null;
+      let currentApiData = null;
+
+      async function initSupabase() {
+        try {
+          const res = await fetch("/api/v1/config");
+          const config = await res.json();
+          supabase = window.supabase.createClient(
+            config.supabaseUrl,
+            config.anonKey,
+            {
+              auth: { flowType: "pkce" },
+            },
+          );
+          supabase.auth.onAuthStateChange((event, session) => {
+            if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+              fetchUserData();
+              if (event === "SIGNED_IN") {
+                setTimeout(() => showScreen("dashboard"), 100);
+              }
+            } else if (event === "SIGNED_OUT") {
+              currentUser = null;
+              currentApiData = null;
+              updateUI();
+            }
+          });
+          const {
+            data: { session },
+          } = await supabase.auth.getSession();
+          if (session) {
+            fetchUserData();
+          } else {
+            updateUI();
+          }
+        } catch (e) {
+          console.error("Failed to init Supabase", e);
+        }
+      }
+
+      async function fetchUserData() {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          currentUser = null;
+          currentApiData = null;
+          updateUI();
+          return;
+        }
+        try {
+          const res = await fetch("/api/v1/auth/me", {
+            headers: { Authorization: "Bearer " + session.access_token },
+          });
+          const data = await res.json();
+          if (data.user) {
+            currentUser = data.user;
+            currentApiData = {
+              api_key: data.api_key,
+              plan: data.plan,
+              limit: data.limit,
+              used: data.used,
+              remaining: data.remaining,
+            };
+          } else {
+            currentUser = null;
+            currentApiData = null;
+          }
+        } catch (e) {
+          console.error("Failed to fetch user data", e);
+          currentUser = null;
+          currentApiData = null;
+        }
+        updateUI();
+      }
+
+      function updateUI() {
+        const signedIn = !!currentUser;
+        document
+          .getElementById("nav-signin")
+          .classList.toggle("hidden", signedIn);
+        document
+          .getElementById("nav-dashboard")
+          .classList.toggle("hidden", !signedIn);
+        document
+          .getElementById("nav-user")
+          .classList.toggle("hidden", !signedIn);
+        if (currentUser) {
+          const avatar = document.getElementById("nav-avatar");
+          avatar.src =
+            currentUser.avatar ||
+            'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%2336363f" width="100" height="100" rx="50"/><text x="50" y="56" text-anchor="middle" fill="%23fff" font-size="36" font-family="sans-serif">' +
+              (currentUser.name?.[0] || "?").toUpperCase() +
+              "</text></svg>";
+          avatar.onerror = function () {
+            this.src =
+              'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%2336363f" width="100" height="100" rx="50"/><text x="50" y="56" text-anchor="middle" fill="%23fff" font-size="36" font-family="sans-serif">' +
+              (currentUser.name?.[0] || "?").toUpperCase() +
+              "</text></svg>";
+          };
+        }
+
+        const hash = window.location.hash.split("?")[0];
+        if (hash === "#dashboard") {
+          if (!signedIn) {
+            showScreen("login");
+            return;
+          }
+          showScreen("dashboard");
+          loadDashboard();
+        } else if (hash === "#login") {
+          if (signedIn) {
+            showScreen("dashboard");
+            loadDashboard();
+          } else showScreen("login");
+        } else if (hash === "#signup") {
+          if (signedIn) {
+            showScreen("dashboard");
+            loadDashboard();
+          } else showScreen("signup");
+        } else {
+          showScreen("home");
+        }
+      }
+
+      function showScreen(name) {
+        document
+          .querySelectorAll('[id^="screen-"]')
+          .forEach((s) => s.classList.add("hidden"));
+        document.getElementById("screen-" + name).classList.remove("hidden");
+        window.location.hash = name === "home" ? "" : name;
+      }
+
+      function loadDashboard() {
+        if (!currentApiData) return;
+        document.getElementById("apikey-display").value =
+          currentApiData.api_key;
+        document.getElementById("used-count").textContent = currentApiData.used;
+        document.getElementById("limit-display").textContent =
+          currentApiData.limit;
+        document.getElementById("remaining-display").textContent =
+          currentApiData.remaining;
+        document.getElementById("dashboard-name").textContent =
+          currentUser?.name || "";
+        document.getElementById("dashboard-email").textContent =
+          currentUser?.email || "";
+        const da = document.getElementById("dashboard-avatar");
+        if (currentUser?.avatar) {
+          da.src = currentUser.avatar;
+          da.style.display = "block";
+        } else {
+          da.style.display = "none";
+        }
+        document.getElementById("checkout-apikey").value =
+          currentApiData.api_key;
+        document.getElementById("checkout-email").value =
+          currentUser?.email || "";
+      }
+
+      function copyApiKey() {
+        const key = document.getElementById("apikey-display").value;
+        navigator.clipboard.writeText(key);
+        showToast("API key copied", "success");
+      }
+
+      async function regenerateKey() {
+        if (
+          !confirm(
+            "Regenerating your API key will break existing integrations. Continue?",
+          )
+        )
+          return;
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) return;
+        try {
+          const res = await fetch("/api/v1/keys", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + session.access_token,
+            },
+            body: JSON.stringify({
+              email: currentUser?.email,
+              regenerate: true,
+            }),
+          });
+          const data = await res.json();
+          if (res.ok && data.api_key) {
+            currentApiData.api_key = data.api_key;
+            document.getElementById("apikey-display").value = data.api_key;
+            showToast("API key regenerated", "success");
+          }
+        } catch (e) {
+          showToast("Failed to regenerate key", "error");
+        }
+      }
+
+      function toggleDropdown() {
+        document.getElementById("nav-dropdown-menu").classList.toggle("open");
+      }
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".nav-dropdown")) {
+          document.getElementById("nav-dropdown-menu").classList.remove("open");
+        }
+      });
+
+      async function signInWithGoogle() {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.origin },
+        });
+        if (error) showToast(error.message, "error");
+      }
+
+      async function signOut() {
+        await supabase.auth.signOut();
+        currentUser = null;
+        currentApiData = null;
+        showScreen("home");
+        updateUI();
+        showToast("Signed out", "success");
+      }
+
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("login-email").value.trim();
+          const password = document.getElementById("login-password").value;
+          const btn = document.getElementById("login-btn");
+          const err = document.getElementById("login-error");
+          err.classList.remove("visible");
+          btn.disabled = true;
+          btn.textContent = "Signing in...";
+          const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          btn.disabled = false;
+          btn.textContent = "Sign In";
+          if (error) {
+            err.textContent = error.message;
+            err.classList.add("visible");
+          }
+        });
+
+      document
+        .getElementById("signup-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("signup-email").value.trim();
+          const password = document.getElementById("signup-password").value;
+          const btn = document.getElementById("signup-btn");
+          const err = document.getElementById("signup-error");
+          err.classList.remove("visible");
+          btn.disabled = true;
+          btn.textContent = "Creating account...";
+          const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: { emailRedirectTo: window.location.origin },
+          });
+          btn.disabled = false;
+          btn.textContent = "Create Account";
+          if (error) {
+            err.textContent = error.message;
+            err.classList.add("visible");
+          } else {
+            showToast(
+              "Account created! Check your email for confirmation.",
+              "success",
+            );
+            showScreen("login");
+          }
+        });
 
       async function convertWeb() {
         const btn = document.getElementById("convert-btn");
@@ -832,12 +1505,10 @@
           status.textContent = "Paste some HTML first";
           return;
         }
-
         btn.disabled = true;
         btn.textContent = "Converting...";
         status.textContent = "";
         document.getElementById("download-btn").style.display = "none";
-
         try {
           const res = await fetch("/api/v1/convert/public", {
             method: "POST",
@@ -877,16 +1548,12 @@
         URL.revokeObjectURL(url);
       }
 
-      let currentPlan = null;
-
       function checkout(plan) {
         currentPlan = plan;
-        document.getElementById("checkout-plan-label").textContent = "Subscribe to " + plan.charAt(0).toUpperCase() + plan.slice(1);
-        document.getElementById("checkout-email").value = "";
-        document.getElementById("checkout-apikey").value = document.getElementById("apikey-display").value;
+        document.getElementById("checkout-plan-label").textContent =
+          "Subscribe to " + plan.charAt(0).toUpperCase() + plan.slice(1);
         document.getElementById("checkout-error").classList.add("hidden");
         document.getElementById("checkout-modal").classList.remove("hidden");
-        setTimeout(() => document.getElementById("checkout-email").focus(), 100);
       }
 
       function closeCheckout() {
@@ -894,14 +1561,15 @@
       }
 
       async function submitCheckout() {
-        const email = document.getElementById("checkout-email").value.trim();
+        const email =
+          document.getElementById("checkout-email").value.trim() ||
+          currentUser?.email;
         const apiKey = document.getElementById("checkout-apikey").value.trim();
         if (!email) return;
         const btn = document.getElementById("checkout-submit");
         btn.disabled = true;
         btn.textContent = "Processing...";
         document.getElementById("checkout-error").classList.add("hidden");
-
         try {
           const res = await fetch("/api/v1/checkout", {
             method: "POST",
@@ -912,88 +1580,35 @@
           if (data.url) {
             window.location.href = data.url;
           } else {
-            document.getElementById("checkout-error").textContent = data.error || "Could not create checkout";
-            document.getElementById("checkout-error").classList.remove("hidden");
+            document.getElementById("checkout-error").textContent =
+              data.error || "Could not create checkout";
+            document
+              .getElementById("checkout-error")
+              .classList.remove("hidden");
             btn.disabled = false;
             btn.textContent = "Subscribe";
           }
         } catch {
-          document.getElementById("checkout-error").textContent = "Could not reach server";
+          document.getElementById("checkout-error").textContent =
+            "Could not reach server";
           document.getElementById("checkout-error").classList.remove("hidden");
           btn.disabled = false;
           btn.textContent = "Subscribe";
         }
       }
 
-      document
-        .getElementById("signup-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const email = document.getElementById("signup-email").value.trim();
-          const btn = e.target.querySelector("button");
-          btn.disabled = true;
-          btn.textContent = "Generating...";
-
-          try {
-            const res = await fetch("/api/v1/keys", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email }),
-            });
-            const data = await res.json();
-            if (res.ok) {
-              document.getElementById("generated-key").textContent = data.api_key;
-              document.getElementById("key-result").classList.remove("hidden");
-              document.getElementById("signup-form").classList.add("hidden");
-            } else {
-              alert(data.error || "Something went wrong");
-            }
-          } catch {
-            alert("Could not reach server. Try again later.");
-          }
-          btn.disabled = false;
-          btn.textContent = "Generate API key";
-        });
-
-      function copyKey() {
-        const key = document.getElementById("generated-key").textContent;
-        navigator.clipboard.writeText(key);
+      function showToast(msg, type) {
+        const t = document.getElementById("toast");
+        document.getElementById("toast-message").textContent = msg;
+        document.getElementById("toast-icon").textContent =
+          type === "success" ? "✓" : "✗";
+        t.className = "toast visible " + type;
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => t.classList.remove("visible"), 3000);
       }
 
-      function goToDashboard() {
-        const key = document.getElementById("generated-key").textContent;
-        window.location.href = window.location.pathname + "#dashboard?api_key=" + key;
-      }
-
-      function lookupUsage() {
-        const key = document.getElementById("apikey-display").value.trim();
-        if (!key) return;
-        fetch("/api/v1/usage", { headers: { Authorization: "Bearer " + key } })
-          .then((r) => r.json())
-          .then((d) => {
-            if (d.error) {
-              document.getElementById("used-count").textContent = "-";
-              document.getElementById("limit-display").textContent = "-";
-              document.getElementById("remaining-display").textContent = "-";
-              document.getElementById("convert-status").textContent = d.error;
-              return;
-            }
-            document.getElementById("used-count").textContent = d.used;
-            document.getElementById("limit-display").textContent = d.limit;
-            document.getElementById("remaining-display").textContent = d.remaining;
-          })
-          .catch(() => {
-            document.getElementById("convert-status").textContent = "Could not fetch usage";
-          });
-      }
-
-      const params = new URLSearchParams(window.location.search);
-      const hashParams = new URLSearchParams(window.location.hash.split("?")[1] || "");
-      const key = params.get("api_key") || hashParams.get("api_key");
-      if (key) {
-        document.getElementById("apikey-display").value = key;
-        lookupUsage();
-      }
+      window.addEventListener("hashchange", updateUI);
+      initSupabase();
     </script>
   </body>
 </html>
