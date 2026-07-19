@@ -65,12 +65,17 @@ app.post(
     const { data } = event;
     const email =
       data.attributes?.user_email || data.attributes?.customer_email;
+    const included = event.included || [];
+    const orderItem = included.find((i) => i.type === "order-items");
     const apiKey =
+      event.meta?.custom_data?.api_key ||
       data.attributes?.first_order_item?.product_options?.custom?.api_key ||
-      data.attributes?.order_item?.product_options?.custom?.api_key;
+      data.attributes?.order_item?.product_options?.custom?.api_key ||
+      orderItem?.attributes?.product_options?.custom?.api_key;
     const variantId = String(
       data.attributes?.first_order_item?.variant_id ||
         data.attributes?.variant_id ||
+        orderItem?.attributes?.variant_id ||
         "",
     );
 
@@ -100,6 +105,12 @@ app.post(
           k.limit = limit;
         }
         console.log(`Upgraded ${email} to ${plan}`);
+      } else if (email && supabase) {
+        await supabase
+          .from("api_keys")
+          .update({ plan, limit_count: limit })
+          .eq("email", email);
+        console.log(`Upgraded ${email} to ${plan} (by email lookup)`);
       }
     }
 
@@ -118,6 +129,12 @@ app.post(
           k.limit = 10;
         }
         console.log(`Downgraded ${email} to free`);
+      } else if (email && supabase) {
+        await supabase
+          .from("api_keys")
+          .update({ plan: "free", limit_count: 10 })
+          .eq("email", email);
+        console.log(`Downgraded ${email} to free (by email lookup)`);
       }
     }
 
@@ -413,7 +430,7 @@ app.post("/api/v1/checkout", express.json(), async (req, res) => {
         custom: { api_key: api_key || "" },
       },
       productOptions: {
-        redirect_url: `${req.headers.origin || "https://pdfapi.uhadev.com"}/?api_key=${api_key || ""}&checkout=success`,
+        redirect_url: `${req.headers.origin || "https://pdfapi.uhadev.com"}/#dashboard?checkout=success`,
       },
     });
 
