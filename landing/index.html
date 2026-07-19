@@ -1217,7 +1217,7 @@
     </footer>
 
     <script>
-      let supabase = null;
+      let sb = null;
       let lastPdfBlob = null;
       let currentPlan = null;
       let currentUser = null;
@@ -1227,14 +1227,14 @@
         try {
           const res = await fetch("/api/v1/config");
           const config = await res.json();
-          supabase = window.supabase.createClient(
+          sb = window.supabase.createClient(
             config.supabaseUrl,
             config.anonKey,
             {
               auth: { flowType: "pkce" },
             },
           );
-          supabase.auth.onAuthStateChange((event, session) => {
+          sb.auth.onAuthStateChange((event, session) => {
             if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
               fetchUserData();
               if (event === "SIGNED_IN") {
@@ -1248,7 +1248,7 @@
           });
           const {
             data: { session },
-          } = await supabase.auth.getSession();
+          } = await sb.auth.getSession();
           if (session) {
             fetchUserData();
           } else {
@@ -1262,7 +1262,7 @@
       async function fetchUserData() {
         const {
           data: { session },
-        } = await supabase.auth.getSession();
+        } = await sb.auth.getSession();
         if (!session) {
           currentUser = null;
           currentApiData = null;
@@ -1393,7 +1393,7 @@
           return;
         const {
           data: { session },
-        } = await supabase.auth.getSession();
+        } = await sb.auth.getSession();
         if (!session) return;
         try {
           const res = await fetch("/api/v1/keys", {
@@ -1428,7 +1428,7 @@
       });
 
       async function signInWithGoogle() {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { data, error } = await sb.auth.signInWithOAuth({
           provider: "google",
           options: { redirectTo: window.location.origin },
         });
@@ -1436,7 +1436,7 @@
       }
 
       async function signOut() {
-        await supabase.auth.signOut();
+        await sb.auth.signOut();
         currentUser = null;
         currentApiData = null;
         showScreen("home");
@@ -1455,7 +1455,7 @@
           err.classList.remove("visible");
           btn.disabled = true;
           btn.textContent = "Signing in...";
-          const { error } = await supabase.auth.signInWithPassword({
+          const { error } = await sb.auth.signInWithPassword({
             email,
             password,
           });
@@ -1478,7 +1478,7 @@
           err.classList.remove("visible");
           btn.disabled = true;
           btn.textContent = "Creating account...";
-          const { error } = await supabase.auth.signUp({
+          const { error } = await sb.auth.signUp({
             email,
             password,
             options: { emailRedirectTo: window.location.origin },
