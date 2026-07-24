@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>PDFPing API Docs — HTML to PDF Conversion</title>
+    <meta
+      name="description"
+      content="Full API documentation for PDFPing. Convert HTML to PDF with Chromium-powered rendering. curl, JavaScript, and Python examples. Free API key included."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://pdfapi.uhadev.com/docs" />
+    <meta property="og:title" content="PDFPing API Docs — HTML to PDF Conversion" />
+    <meta
+      property="og:description"
+      content="Full API documentation for PDFPing. Convert HTML to PDF with one POST request. Free API key included."
+    />
+    <meta property="og:url" content="https://pdfapi.uhadev.com/docs" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PDFPing API Docs" />
+    <meta
+      name="twitter:description"
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "PDFPing API Documentation",
+        "url": "https://pdfapi.uhadev.com/docs",
+        "description": "Full API documentation for HTML to PDF conversion using PDFPing.",
+        "proficiencyLevel": "Beginner",
+        "datePublished": "2026-01-01"
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <noscript
+      ><link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet"
+    /></noscript>
+    <style>
+      :root {
+        --bg: #0b0b0e;
+        --surface: #141418;
+        --border: #1e1e24;
+        --text: #f8f8f8;
+        --text-secondary: #8a8a92;
+        --accent: #6366f1;
+        --accent-end: #8b5cf6;
+        --code-bg: #1a1a20;
+        --green: #22c55e;
+        --amber: #f59e0b;
+        --red: #ef4444;
+        --radius: 10px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", system-ui, sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+      .container {
+        max-width: 840px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 0;
+      }
+      .logo {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -0.3px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .logo span {
+        color: var(--accent);
+      }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .nav-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: color 0.15s;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      h1 {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 48px 0 8px;
+      }
+      h1 + p {
+        color: var(--text-secondary);
+        font-size: 15px;
+      }
+
+      h2 {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        font-weight: 600;
+        margin: 40px 0 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      h3 {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        font-weight: 600;
+        margin: 28px 0 8px;
+        color: var(--text);
+      }
+
+      p, li {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.7;
+      }
+      p {
+        margin-bottom: 12px;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      ul, ol {
+        padding-left: 20px;
+        margin-bottom: 16px;
+      }
+      li {
+        margin-bottom: 4px;
+      }
+
+      .code-block {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.8;
+        overflow-x: auto;
+        color: #d4d4d8;
+        margin-bottom: 20px;
+      }
+      .code-block .comment {
+        color: #52525b;
+      }
+      .code-block .url {
+        color: var(--accent);
+      }
+      .code-block .string {
+        color: #22c55e;
+      }
+      .code-block .key {
+        color: #f59e0b;
+      }
+      .code-block .method {
+        color: #ef4444;
+      }
+
+      .param-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        font-size: 13px;
+      }
+      .param-table th {
+        text-align: left;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      .param-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-secondary);
+        vertical-align: top;
+      }
+      .param-table td:first-child {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--text);
+        white-space: nowrap;
+      }
+      .param-table .type {
+        color: var(--accent);
+        font-size: 11px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .param-table .required {
+        color: var(--red);
+        font-size: 10px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .param-table .optional {
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      .endpoint {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .endpoint-method {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 4px;
+        background: var(--green);
+        color: #000;
+      }
+      .endpoint-method.get {
+        background: var(--accent);
+      }
+      .endpoint-path {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .endpoint-desc {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+
+      .info-box {
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .info-box strong {
+        color: var(--accent);
+      }
+
+      .toc {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin: 24px 0 32px;
+      }
+      .toc h3 {
+        margin: 0 0 12px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-secondary);
+      }
+      .toc a {
+        display: block;
+        font-size: 13px;
+        padding: 4px 0;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 0;
+        margin-top: 64px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      footer a {
+        color: var(--text-secondary);
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: var(--text);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <a href="/" class="logo"><span>PDF</span>Ping</a>
+        <div class="nav-links">
+          <a href="/docs">Docs</a>
+          <a href="https://github.com/Spyboss/pdfping" target="_blank">GitHub</a>
+          <a href="/#login">Sign In</a>
+        </div>
+      </nav>
+
+      <h1>API Reference</h1>
+      <p>
+        Convert HTML or URLs to PDF with a single POST request.
+        Chromium-powered rendering — CSS, fonts, images, everything.
+      </p>
+
+      <div class="toc">
+        <h3>Contents</h3>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#authentication">Authentication</a>
+        <a href="#endpoints">Endpoints</a>
+        <a href="#parameters">Request Parameters</a>
+        <a href="#responses">Responses &amp; Errors</a>
+        <a href="#examples">Code Examples</a>
+        <a href="#rate-limits">Rate Limits</a>
+      </div>
+
+      <h2 id="quickstart">Quick Start</h2>
+      <div class="code-block">
+        <div class="comment"># Convert HTML to PDF (no API key needed, rate-limited)</div>
+        <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert/public</span> \</div>
+        <div>  -H "Content-Type: application/json" \</div>
+        <div>  -d '{ "html": "&lt;h1&gt;Hello World&lt;/h1&gt;" }' \</div>
+        <div>  -o output.pdf</div>
+      </div>
+
+      <div class="info-box">
+        <strong>Free API key:</strong> Sign in at <a href="/#login">pdfapi.uhadev.com</a>
+        to get an API key with a 10,000 conversion limit — no credit card required.
+      </div>
+
+      <h2 id="authentication">Authentication</h2>
+      <p>
+        Authenticated requests use a Bearer token in the <code>Authorization</code> header.
+        Get your key by signing in on the <a href="/#login">landing page</a>.
+      </p>
+      <div class="code-block">
+        <div>Authorization: Bearer pdfping_&lt;your_api_key&gt;</div>
+      </div>
+      <p>
+        Without a key, use the <code>/public</code> endpoint which is limited to
+        50 conversions per day per IP.
+      </p>
+
+      <h2 id="endpoints">Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="endpoint-method">POST</span>
+        <span class="endpoint-path">/api/v1/convert</span>
+        <span class="endpoint-desc">Authenticated conversion</span>
+      </div>
+      <p>
+        Requires a valid API key in the <code>Authorization</code> header.
+        Supports all options including custom page format, margins, and landscape.
+        Counts toward your API key usage limit.
+      </p>
+
+      <div class="endpoint">
+        <span class="endpoint-method">POST</span>
+        <span class="endpoint-path">/api/v1/convert/public</span>
+        <span class="endpoint-desc">Public conversion (rate-limited)</span>
+      </div>
+      <p>
+        No API key required. Limited to 50 conversions per day per IP address.
+      </p>
+
+      <h2 id="parameters">Request Parameters</h2>
+      <p>Send a JSON body with <code>Content-Type: application/json</code>.</p>
+
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>html</td>
+            <td><span class="type">string</span></td>
+            <td>—</td>
+            <td>HTML string to render. Provide this or <code>url</code>.</td>
+          </tr>
+          <tr>
+            <td>url</td>
+            <td><span class="type">string</span></td>
+            <td>—</td>
+            <td>URL to render. Provide this or <code>html</code>.</td>
+          </tr>
+          <tr>
+            <td>options.format</td>
+            <td><span class="type">string</span></td>
+            <td><span class="optional">A4</span></td>
+            <td>Page format. One of: A3, A4, A5, Letter, Legal, Tabloid.</td>
+          </tr>
+          <tr>
+            <td>options.landscape</td>
+            <td><span class="type">boolean</span></td>
+            <td><span class="optional">false</span></td>
+            <td>Render in landscape orientation.</td>
+          </tr>
+          <tr>
+            <td>options.printBackground</td>
+            <td><span class="type">boolean</span></td>
+            <td><span class="optional">true</span></td>
+            <td>Include CSS background colors and images.</td>
+          </tr>
+          <tr>
+            <td>options.margin</td>
+            <td><span class="type">string</span></td>
+            <td><span class="optional">0mm</span></td>
+            <td>Page margin (CSS units, e.g. <code>10mm</code>, <code>0.5in</code>). Applied to all sides.</td>
+          </tr>
+          <tr>
+            <td>options.wait</td>
+            <td><span class="type">number</span></td>
+            <td><span class="optional">1</span></td>
+            <td>Seconds to wait after page load before generating PDF. Increase for JS-rendered content.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Example request body</h3>
+      <div class="code-block">
+{<br />  <span class="key">"html"</span>: <span class="string">"&lt;h1&gt;Invoice&lt;/h1&gt;&lt;p&gt;Hello&lt;/p&gt;"</span>,<br />  <span class="key">"options"</span>: {<br />    <span class="key">"format"</span>: <span class="string">"A4"</span>,<br />    <span class="key">"landscape"</span>: <span class="string">false</span>,<br />    <span class="key">"margin"</span>: <span class="string">"10mm"</span><br />  }<br />}
+      </div>
+
+      <h2 id="responses">Responses &amp; Errors</h2>
+
+      <h3>Success (200)</h3>
+      <p>
+        Returns the PDF binary with <code>Content-Type: application/pdf</code>.
+        The <code>Content-Disposition</code> header is set to <code>inline</code>
+        so browsers display the PDF directly.
+      </p>
+
+      <h3>Error responses</h3>
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Body</th>
+            <th>Cause</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>400</td>
+            <td><span class="type">{ "error": "..." }</span></td>
+            <td>Missing or invalid request body (no <code>html</code> or <code>url</code>).</td>
+          </tr>
+          <tr>
+            <td>401</td>
+            <td><span class="type">{ "error": "..." }</span></td>
+            <td>Missing <code>Authorization</code> header on authenticated endpoint.</td>
+          </tr>
+          <tr>
+            <td>403</td>
+            <td><span class="type">{ "error": "..." }</span></td>
+            <td>Invalid API key.</td>
+          </tr>
+          <tr>
+            <td>429</td>
+            <td><span class="type">{ "error": "..." }</span></td>
+            <td>Rate limit exceeded on the public endpoint.</td>
+          </tr>
+          <tr>
+            <td>500</td>
+            <td><span class="type">{ "error": "...", "detail": "..." }</span></td>
+            <td>Conversion failed (invalid HTML, unreachable URL, browser error).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="examples">Code Examples</h2>
+
+      <h3>curl</h3>
+      <div class="code-block">
+        <div class="comment"># Authenticated — with options</div>
+        <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span> \</div>
+        <div>  -H <span class="string">"Authorization: Bearer pdfping_YOUR_KEY"</span> \</div>
+        <div>  -H "Content-Type: application/json" \</div>
+        <div>  -d '{</div>
+        <div>    "html": "&lt;h1&gt;Hello World&lt;/h1&gt;",</div>
+        <div>    "options": { "format": "A4", "margin": "10mm" }</div>
+        <div>  }' \</div>
+        <div>  -o output.pdf</div>
+      </div>
+
+      <h3>JavaScript (fetch)</h3>
+      <div class="code-block">
+        <div class="comment">// Node.js or browser</div>
+        <div>const res = await fetch(<span class="string">"https://pdfapi.uhadev.com/api/v1/convert"</span>, {</div>
+        <div>  method: "POST",</div>
+        <div>  headers: {</div>
+        <div>    "Content-Type": "application/json",</div>
+        <div>    "Authorization": <span class="string">"Bearer pdfping_YOUR_KEY"</span>,</div>
+        <div>  },</div>
+        <div>  body: JSON.stringify({</div>
+        <div>    html: <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>,</div>
+        <div>  }),</div>
+        <div>});</div>
+        <br />
+        <div class="comment">// Save to file (Node.js)</div>
+        <div>const buffer = Buffer.from(await res.arrayBuffer());</div>
+        <div>require("fs").writeFileSync("output.pdf", buffer);</div>
+      </div>
+
+      <h3>Python</h3>
+      <div class="code-block">
+        <div class="comment"># pip install requests</div>
+        <div>import requests</div>
+        <br />
+        <div>res = requests.post(</div>
+        <div>    <span class="string">"https://pdfapi.uhadev.com/api/v1/convert"</span>,</div>
+        <div>    headers={</div>
+        <div>        "Authorization": <span class="string">"Bearer pdfping_YOUR_KEY"</span>,</div>
+        <div>        "Content-Type": "application/json",</div>
+        <div>    },</div>
+        <div>    json={</div>
+        <div>        "html": <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>,</div>
+        <div>        "options": { "format": "A4" },</div>
+        <div>    },</div>
+        <div>)</div>
+        <br />
+        <div>with open("output.pdf", "wb") as f:</div>
+        <div>    f.write(res.content)</div>
+      </div>
+
+      <h2 id="rate-limits">Rate Limits</h2>
+      <table class="param-table">
+        <thead>
+          <tr>
+            <th>Endpoint</th>
+            <th>Limit</th>
+            <th>Requires API Key</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/api/v1/convert</code></td>
+            <td>10,000 conversions per key</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td><code>/api/v1/convert/public</code></td>
+            <td>50 conversions/day per IP</td>
+            <td>No</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Authenticated key limits reset monthly. Need more? Self-host on
+        <a href="https://github.com/Spyboss/pdfping" target="_blank">GitHub</a>.
+      </p>
+
+      <div class="info-box">
+        <strong>Open source:</strong> PDFPing is MIT-licensed.
+        <a href="https://github.com/Spyboss/pdfping" target="_blank">Star on GitHub</a>.
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <a href="https://uminda.dev" target="_blank">UHADEV</a> &middot;
+        <a href="https://github.com/Spyboss/pdfping" target="_blank">GitHub</a> &middot;
+        <a href="mailto:contact@uhadev.com">contact@uhadev.com</a>
+      </div>
+    </footer>
+  </body>
+</html>

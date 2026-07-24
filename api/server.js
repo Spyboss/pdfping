@@ -4,6 +4,7 @@ const { chromium } = require("playwright");
 const cors = require("cors");
 const helmet = require("helmet");
 const crypto = require("crypto");
+const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
 const { WebSocket } = require("ws");
 
@@ -309,6 +310,10 @@ app.post("/api/v1/convert/public", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: "Conversion failed", detail: err.message });
   }
+});
+
+app.get("/docs", (req, res) => {
+  res.sendFile(path.join(__dirname, "../landing/docs.html"));
 });
 
 app.use(express.static("../landing"));

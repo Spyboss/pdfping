@@ -4,17 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>PDFPing - Free HTML to PDF API</title>
+    <title>HTML to PDF API | PDFPing — Chromium-Powered PDF Generation</title>
     <meta
       name="description"
-      content="Convert HTML to PDF with one POST request. Chromium-powered rendering. Forever free."
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering with full CSS, font, and image support. Generate invoices, reports, and documents programmatically."
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://pdfapi.uhadev.com/" />
-    <meta property="og:title" content="PDFPing - Free HTML to PDF API" />
+    <meta property="og:title" content="HTML to PDF API — PDFPing" />
     <meta
       property="og:description"
-      content="Convert HTML to PDF with one POST request. Chromium-powered rendering. Forever free."
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering with full CSS, font, and image support."
     />
     <meta property="og:url" content="https://pdfapi.uhadev.com/" />
     <meta property="og:type" content="website" />
@@ -27,12 +27,21 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "PDFPing",
+        "@type": "WebAPI",
+        "name": "PDFPing API",
         "url": "https://pdfapi.uhadev.com",
-        "description": "HTML to PDF conversion API",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "All"
+        "description": "HTML to PDF conversion API. Send HTML or a URL, receive a PDF. Chromium-powered rendering.",
+        "documentation": "https://pdfapi.uhadev.com/docs",
+        "provider": {
+          "@type": "Person",
+          "name": "UHADEV",
+          "url": "https://uminda.dev"
+        },
+        "potentialAction": {
+          "@type": "Action",
+          "name": "Convert HTML to PDF",
+          "target": "https://pdfapi.uhadev.com/api/v1/convert"
+        }
       }
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -630,7 +639,7 @@
       <nav>
         <a href="#home" class="logo"><span>PDF</span>Ping</a>
         <div class="nav-links">
-          <a href="#docs">Docs</a>
+          <a href="/docs">Docs</a>
           <a href="#dashboard" id="nav-dashboard" class="hidden">Dashboard</a>
           <a href="#login" id="nav-signin">Sign In</a>
           <div id="nav-user" class="nav-dropdown hidden">
@@ -709,12 +718,12 @@
           <div id="convert-status"></div>
         </div>
 
-        <p class="tagline">Paste HTML. <span>Get a PDF.</span> One request.</p>
+        <h1 class="tagline">Paste HTML. <span>Get a PDF.</span> One request.</h1>
 
         <section>
           <div class="features">
             <div class="feature">
-              <h3>Full Chromium rendering</h3>
+              <h2>Full Chromium rendering</h2>
               <p>
                 CSS, fonts, images - everything renders as it would in a
                 browser. No quirks, no surprises.
@@ -738,7 +747,7 @@
         </section>
 
         <section id="docs">
-          <div class="section-label">API</div>
+          <h2 class="section-label">API</h2>
           <div class="code-block">
             <div class="comment"># Convert HTML to PDF</div>
             <div>

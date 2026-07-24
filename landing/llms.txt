@@ -1,0 +1,35 @@
+# PDFPing — HTML to PDF API
+
+> Convert HTML or URLs to PDF with a single POST request. Chromium-powered rendering with full CSS, font, and image support. MIT licensed.
+
+## Docs
+
+- [API Reference](https://pdfapi.uhadev.com/docs): Full API docs with endpoints, parameters, code examples (curl, JavaScript, Python), error codes, and rate limits.
+- [Landing Page](https://pdfapi.uhadev.com/): Live HTML-to-PDF converter, feature overview, sign in for API key.
+- [GitHub Repository](https://github.com/Spyboss/pdfping): Source code, self-hosting guide, MIT license.
+
+## Quick Start
+
+Convert HTML to PDF with one curl command:
+
+```
+curl -X POST https://pdfapi.uhadev.com/api/v1/convert/public \
+  -H "Content-Type: application/json" \
+  -d '{ "html": "<h1>Hello World</h1>" }' \
+  -o output.pdf
+```
+
+Authenticated endpoint (requires API key — get one free at https://pdfapi.uhadev.com):
+
+```
+curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
+  -H "Authorization: Bearer pdfping_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "html": "<h1>Hello World</h1>" }' \
+  -o output.pdf
+```
+
+## Contact
+
+- Email: contact@uhadev.com
+- Author: Uminda (https://uminda.dev)
