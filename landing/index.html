@@ -615,17 +615,6 @@
       .hidden {
         display: none !important;
       }
-      .notice {
-        text-align: center;
-        padding: 12px;
-        font-size: 12px;
-        color: var(--text-secondary);
-        border-bottom: 1px solid var(--border);
-      }
-      .notice a {
-        color: var(--accent);
-        text-decoration: none;
-      }
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
@@ -643,7 +632,7 @@
         <div class="nav-links">
           <a href="#docs">Docs</a>
           <a href="#dashboard" id="nav-dashboard" class="hidden">Dashboard</a>
-          <a href="#login" id="nav-signin">Get API Key</a>
+          <a href="#login" id="nav-signin">Sign In</a>
           <div id="nav-user" class="nav-dropdown hidden">
             <img
               id="nav-avatar"
@@ -659,10 +648,6 @@
       </nav>
 
       <div id="screen-home">
-        <div class="notice">
-          PDFPing is and always will be free.
-          <a href="https://github.com/Spyboss/pdfping" target="_blank">Source on GitHub</a>
-        </div>
         <div class="converter">
           <div class="converter-header">
             <span class="converter-dot"></span
@@ -724,7 +709,7 @@
           <div id="convert-status"></div>
         </div>
 
-        <p class="tagline">Paste HTML. <span>Get a PDF.</span> One request. Forever free.</p>
+        <p class="tagline">Paste HTML. <span>Get a PDF.</span> One request.</p>
 
         <section>
           <div class="features">

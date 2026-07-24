@@ -1,6 +1,6 @@
 # PDFPing
 
-Send HTML or a URL. Get a PDF back. Free.
+Send HTML or a URL. Get a PDF back.
 
 Built with Chromium via Playwright. One POST request, no queues, no SDK.
 
