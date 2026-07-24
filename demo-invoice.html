@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { margin: 15mm; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #1a1a2e;
+    }
+    .invoice {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #6366f1;
+    }
+    .brand h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand span {
+      font-size: 11px;
+      color: #6366f1;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .meta { text-align: right; }
+    .meta strong { color: #1a1a2e; }
+    .meta p { color: #52525b; font-size: 11px; margin-bottom: 2px; }
+
+    .billing {
+      display: flex;
+      justify-content: space-between;
+      margin: 24px 0;
+      padding: 16px 20px;
+      background: #f8f8ff;
+      border-radius: 8px;
+    }
+    .billing h3 {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6366f1;
+      margin-bottom: 6px;
+    }
+    .billing p { color: #52525b; font-size: 11px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th {
+      background: #6366f1;
+      color: #fff;
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    th:first-child { border-radius: 6px 0 0 0; }
+    th:last-child { border-radius: 0 6px 0 0; text-align: right; }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e4e4e7;
+      font-size: 12px;
+      color: #3f3f46;
+    }
+    td:last-child { text-align: right; font-weight: 600; }
+    .total td {
+      border: none;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+    .total td:last-child { font-family: 'Courier New', monospace; }
+    .grand-total td {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a2e;
+      border-top: 2px solid #1a1a2e;
+      padding-top: 10px;
+    }
+    .grand-total td:last-child { color: #6366f1; }
+
+    .summary-chart {
+      display: flex;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .stat-card {
+      flex: 1;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-card:first-child { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .stat-card:nth-child(2) { background: #1a1a2e; }
+    .stat-card:last-child { background: linear-gradient(135deg, #059669, #10b981); }
+    .stat-card .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-card .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 4px;
+    }
+
+    .progress-bar {
+      margin: 16px 0;
+    }
+    .progress-bar .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .progress-bar .row span:first-child {
+      width: 100px;
+      font-size: 11px;
+      color: #52525b;
+    }
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      background: #e4e4e7;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+    .progress-bar .row span:last-child {
+      width: 40px;
+      text-align: right;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid #e4e4e7;
+      text-align: center;
+      font-size: 10px;
+      color: #a1a1aa;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+  </style>
+</head>
+<body>
+  <div class="invoice">
+    <div class="header">
+      <div class="brand">
+        <h1>PDFPing</h1>
+        <span>Chromium PDF Engine</span>
+      </div>
+      <div class="meta">
+        <p><strong>Invoice #</strong> INV-2026-0042</p>
+        <p><strong>Date</strong> July 24, 2026</p>
+        <p><strong>Status</strong> <span class="badge badge-green">Paid</span></p>
+      </div>
+    </div>
+
+    <div class="billing">
+      <div>
+        <h3>From</h3>
+        <p>UHADEV<br>contact@uhadev.com<br>Colombo, Sri Lanka</p>
+      </div>
+      <div>
+        <h3>To</h3>
+        <p>Acme Corp<br>billing@acme.com<br>San Francisco, CA</p>
+      </div>
+    </div>
+
+    <table>
+      <tr>
+        <th style="width:50%">Service</th>
+        <th style="width:15%">Qty</th>
+        <th style="width:20%">Rate</th>
+        <th style="width:15%">Amount</th>
+      </tr>
+      <tr>
+        <td>API conversions (band A — 0-10k)</td>
+        <td>8,420</td>
+        <td>$0.001</td>
+        <td>$8.42</td>
+      </tr>
+      <tr>
+        <td>API conversions (band B — 10k-50k)</td>
+        <td>12,150</td>
+        <td>$0.0008</td>
+        <td>$9.72</td>
+      </tr>
+      <tr>
+        <td>Priority support SLA</td>
+        <td>1</td>
+        <td>$49.00</td>
+        <td>$49.00</td>
+      </tr>
+      <tr>
+        <td>Custom header/footer templates</td>
+        <td>3</td>
+        <td>$15.00</td>
+        <td>$45.00</td>
+      </tr>
+      <tr class="total">
+        <td colspan="3" style="text-align:right">Subtotal</td>
+        <td>$112.14</td>
+      </tr>
+      <tr class="total">
+        <td colspan="3" style="text-align:right">Tax (0% — Sri Lanka)</td>
+        <td>$0.00</td>
+      </tr>
+      <tr class="grand-total">
+        <td colspan="3" style="text-align:right">Total Due</td>
+        <td>$112.14</td>
+      </tr>
+    </table>
+
+    <div class="summary-chart">
+      <div class="stat-card">
+        <div class="value">20,570</div>
+        <div class="label">Total API Calls</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">99.97%</div>
+        <div class="label">Uptime</div>
+      </div>
+      <div class="stat-card">
+        <div class="value">186ms</div>
+        <div class="label">Avg Response</div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="row">
+        <span>Band A used</span>
+        <div class="progress-track"><div class="progress-fill" style="width:84%;background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div></div>
+        <span>84%</span>
+      </div>
+      <div class="row">
+        <span>Band B used</span>
+        <div class="progress-track"><div class="progress-fill" style="width:24%;background:linear-gradient(90deg,#059669,#10b981)"></div></div>
+        <span>24%</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      PDFPing — MIT Licensed · https://pdfapi.uhadev.com · contact@uhadev.com
+    </div>
+  </div>
+</body>
+</html>

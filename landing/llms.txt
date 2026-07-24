@@ -31,5 +31,5 @@ curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
 
 ## Contact
 
-- Email: contact@uhadev.com
+- Email: itsuhadev@gmail.com
 - Author: Uminda (https://uminda.dev)
