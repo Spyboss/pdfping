@@ -1,39 +1,37 @@
-# PDFPing — PDF Generation API
+# PDFPing
 
-Pass HTML or a URL, get a PDF back. Powered by Chromium via Playwright.
+Send HTML or a URL. Get a PDF back. Free.
 
-## Quick Start
-
-```bash
-# Clone and install
-cd api && npm install
-
-# Create .env from template
-cp .env.example .env
-
-# Start locally
-npm start
-```
-
-## Deployment
-
-### Railway
-```bash
-railway login
-railway init
-railway up
-```
-
-### Render
-Connect repo, set build command `docker build -t pdfping ./api`, start command `docker run -p 3000:3000 pdfping`.
+Built with Chromium via Playwright. One POST request, no queues, no SDK.
 
 ## API
 
-```
-POST /api/v1/convert
-Authorization: Bearer YOUR_API_KEY
-Content-Type: application/json
+### With an API key (higher limits)
 
+```bash
+curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{ "html": "<h1>Hello World</h1>" }' \
+  -o output.pdf
+```
+
+Get a free key at [pdfapi.uhadev.com](https://pdfapi.uhadev.com).
+
+### No key needed (rate-limited)
+
+```bash
+curl -X POST https://pdfapi.uhadev.com/api/v1/convert/public \
+  -H "Content-Type: application/json" \
+  -d '{ "html": "<h1>Hello World</h1>" }' \
+  -o output.pdf
+```
+
+50 conversions/day per IP.
+
+### Options
+
+```json
 {
   "html": "<h1>Hello</h1>",
   "options": {
@@ -44,12 +42,25 @@ Content-Type: application/json
 }
 ```
 
-## Pricing
-- Free: 10 conversions/mo
-- Pro: $9/mo — 500 conversions
+Accepts `html` or `url`. Options: `format`, `landscape`, `printBackground`, `margin`, `wait`.
 
-## Stacks
-- Express + Playwright (Node.js)
-- Supabase (auth, usage tracking)
-- Lemon Squeezy (payments)
-- Docker + Railway/Render (hosting)
+## Run locally
+
+```bash
+cd api
+cp .env.example .env
+npm install
+npm start
+```
+
+Requires Chromium. The Dockerfile handles this automatically.
+
+## Stack
+
+- **Express + Playwright** (Node.js)
+- **Supabase** (auth, usage tracking, optional)
+- **Docker + Railway** (hosting)
+
+## License
+
+MIT

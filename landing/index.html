@@ -4,22 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>PDFPing - HTML to PDF API</title>
+    <title>PDFPing - Free HTML to PDF API</title>
     <meta
       name="description"
-      content="Convert HTML to PDF with one POST request. Chromium-powered rendering. Free tier."
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering. Forever free."
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://pdfapi.uhadev.com/" />
-    <meta property="og:title" content="PDFPing - HTML to PDF API" />
+    <meta property="og:title" content="PDFPing - Free HTML to PDF API" />
     <meta
       property="og:description"
-      content="Convert HTML to PDF with one POST request. Chromium-powered rendering."
+      content="Convert HTML to PDF with one POST request. Chromium-powered rendering. Forever free."
     />
     <meta property="og:url" content="https://pdfapi.uhadev.com/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="PDFPing - HTML to PDF API" />
+    <meta name="twitter:title" content="PDFPing - Free HTML to PDF API" />
     <meta
       name="twitter:description"
       content="Convert HTML to PDF with one POST request. Chromium-powered rendering."
@@ -376,106 +376,6 @@
         color: var(--accent);
       }
 
-      .pricing-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        max-width: 680px;
-        margin: 0 auto;
-      }
-      @media (max-width: 640px) {
-        .pricing-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-      .plan {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 24px;
-        position: relative;
-      }
-      .plan.featured {
-        border-color: var(--accent);
-        background: linear-gradient(135deg, #141418, #1a103f);
-      }
-      .plan .popular-badge {
-        position: absolute;
-        top: -10px;
-        right: 16px;
-        background: var(--amber);
-        color: #0b0b0e;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 10px;
-        font-weight: 600;
-        padding: 3px 10px;
-        border-radius: 20px;
-        letter-spacing: 0.5px;
-      }
-      .plan-name {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 13px;
-        font-weight: 500;
-        margin-bottom: 4px;
-      }
-      .plan-price {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 4px;
-      }
-      .plan-price span {
-        font-size: 14px;
-        font-weight: 400;
-        color: var(--text-secondary);
-      }
-      .plan-limit {
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-bottom: 20px;
-      }
-      .plan ul {
-        list-style: none;
-        margin-bottom: 24px;
-      }
-      .plan ul li {
-        font-size: 13px;
-        color: var(--text-secondary);
-        padding: 4px 0;
-      }
-      .plan ul li::before {
-        content: "→";
-        color: var(--accent);
-        margin-right: 8px;
-      }
-      .plan-btn {
-        display: block;
-        width: 100%;
-        padding: 10px;
-        border-radius: 6px;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        border: 1px solid var(--border);
-        background: transparent;
-        color: var(--text);
-        transition: all 0.15s;
-        text-align: center;
-        text-decoration: none;
-      }
-      .plan-btn:hover {
-        border-color: var(--accent);
-      }
-      .plan.featured .plan-btn {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #fff;
-      }
-      .plan.featured .plan-btn:hover {
-        opacity: 0.9;
-      }
-
       .dashboard-card {
         background: var(--surface);
         border: 1px solid var(--border);
@@ -695,78 +595,6 @@
         font-size: 16px;
       }
 
-      .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 100;
-      }
-      .modal-box {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: 24px;
-        width: 340px;
-        max-width: 90vw;
-      }
-      .modal-box h3 {
-        font-family: "JetBrains Mono", monospace;
-        font-size: 14px;
-        margin-bottom: 4px;
-      }
-      .modal-box p {
-        font-size: 13px;
-        color: var(--text-secondary);
-        margin-bottom: 16px;
-      }
-      .modal-box input {
-        width: 100%;
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 10px 12px;
-        color: var(--text);
-        font-size: 13px;
-        outline: none;
-        margin-bottom: 10px;
-      }
-      .modal-box input:focus {
-        border-color: var(--accent);
-      }
-      .modal-actions {
-        display: flex;
-        gap: 8px;
-      }
-      .modal-actions button {
-        flex: 1;
-        padding: 10px;
-        border-radius: 6px;
-        font-family: "JetBrains Mono", monospace;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        border: 1px solid var(--border);
-        background: transparent;
-        color: var(--text);
-        transition: all 0.15s;
-      }
-      .modal-actions button.primary {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #fff;
-      }
-      .modal-actions button:hover {
-        opacity: 0.9;
-      }
-      .modal-error {
-        font-size: 12px;
-        color: #ef4444;
-        margin-top: 8px;
-      }
-
       footer {
         border-top: 1px solid var(--border);
         padding: 24px 0;
@@ -787,6 +615,17 @@
       .hidden {
         display: none !important;
       }
+      .notice {
+        text-align: center;
+        padding: 12px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border);
+      }
+      .notice a {
+        color: var(--accent);
+        text-decoration: none;
+      }
       @media (prefers-reduced-motion: reduce) {
         html {
           scroll-behavior: auto;
@@ -802,10 +641,9 @@
       <nav>
         <a href="#home" class="logo"><span>PDF</span>Ping</a>
         <div class="nav-links">
-          <a href="#pricing">Pricing</a>
           <a href="#docs">Docs</a>
           <a href="#dashboard" id="nav-dashboard" class="hidden">Dashboard</a>
-          <a href="#login" id="nav-signin">Sign In</a>
+          <a href="#login" id="nav-signin">Get API Key</a>
           <div id="nav-user" class="nav-dropdown hidden">
             <img
               id="nav-avatar"
@@ -821,6 +659,10 @@
       </nav>
 
       <div id="screen-home">
+        <div class="notice">
+          PDFPing is and always will be free.
+          <a href="https://github.com/Spyboss/pdfping" target="_blank">Source on GitHub</a>
+        </div>
         <div class="converter">
           <div class="converter-header">
             <span class="converter-dot"></span
@@ -882,7 +724,7 @@
           <div id="convert-status"></div>
         </div>
 
-        <p class="tagline">Paste HTML. <span>Get a PDF.</span> One request.</p>
+        <p class="tagline">Paste HTML. <span>Get a PDF.</span> One request. Forever free.</p>
 
         <section>
           <div class="features">
@@ -903,8 +745,8 @@
             <div class="feature">
               <h3>Usage dashboard</h3>
               <p>
-                See your conversions in real time. Know your limits and upgrade
-                when you need to.
+                Sign in to get an API key and track your conversions in real
+                time.
               </p>
             </div>
           </div>
@@ -938,45 +780,16 @@
             <div>-H "Content-Type: application/json" \</div>
             <div>-d '{ "url": "https://example.com" }' \</div>
             <div>-o page.pdf</div>
-          </div>
-        </section>
-
-        <section id="pricing">
-          <div class="section-label">Pricing</div>
-          <div class="pricing-grid">
-            <div class="plan" id="plan-free">
-              <div class="plan-name">Free</div>
-              <div class="plan-price">$0</div>
-              <div class="plan-limit">10 conversions / month</div>
-              <ul>
-                <li>HTML to PDF</li>
-                <li>URL to PDF</li>
-                <li>Chromium rendering</li>
-                <li>Basic support</li>
-              </ul>
-              <a id="plan-free-cta" href="#signup" class="plan-btn"
-                >Get free key →</a
-              >
+            <br />
+            <div class="comment"># Try it without an API key (rate-limited)</div>
+            <div>
+              curl -X POST
+              <span class="url">https://pdfapi.uhadev.com/api/v1/convert/public</span>
+              \
             </div>
-            <div class="plan featured" id="plan-pro">
-              <div class="popular-badge">POPULAR</div>
-              <div class="plan-name">Pro</div>
-              <div class="plan-price">$9 <span>/mo</span></div>
-              <div class="plan-limit">500 conversions / month</div>
-              <ul>
-                <li>Everything in Free</li>
-                <li>500 conversions / mo</li>
-                <li>Custom page options</li>
-                <li>Priority support</li>
-              </ul>
-              <button
-                id="plan-pro-cta"
-                onclick="checkout('pro')"
-                class="plan-btn"
-              >
-                Subscribe $9/mo
-              </button>
-            </div>
+            <div>-H "Content-Type: application/json" \</div>
+            <div>-d '{ "html": "&lt;h1&gt;Hello World&lt;/h1&gt;" }' \</div>
+            <div>-o output.pdf</div>
           </div>
         </section>
       </div>
@@ -1136,7 +949,6 @@
                   id="dashboard-email"
                   style="font-size: 12px; color: var(--text-secondary)"
                 ></div>
-                <div id="dashboard-plan-badge" style="margin-top: 4px"></div>
               </div>
             </div>
             <label
@@ -1159,61 +971,12 @@
                 <div class="stat-label">Used</div>
               </div>
               <div class="stat">
-                <div id="limit-display" class="stat-value">-</div>
-                <div class="stat-label">Limit</div>
-              </div>
-              <div class="stat">
-                <div
-                  id="remaining-display"
-                  class="stat-value"
-                  style="color: var(--green)"
-                >
-                  -
-                </div>
+                <div id="remaining-display" class="stat-value" style="color: var(--green)">-</div>
                 <div class="stat-label">Remaining</div>
               </div>
             </div>
           </div>
-          <button
-            id="dashboard-upgrade-btn"
-            onclick="checkout('pro')"
-            class="plan-btn"
-            style="max-width: 200px"
-          >
-            Upgrade to Pro →
-          </button>
         </section>
-      </div>
-    </div>
-
-    <div
-      id="checkout-modal"
-      class="modal-overlay hidden"
-      onclick="if (event.target === this) closeCheckout();"
-    >
-      <div class="modal-box" onclick="event.stopPropagation()">
-        <h3 id="checkout-plan-label">Subscribe to Pro</h3>
-        <p id="checkout-modal-desc">
-          Enter your email and API key to get started.
-        </p>
-        <input id="checkout-email" type="email" placeholder="you@example.com" />
-        <input
-          id="checkout-apikey"
-          type="text"
-          placeholder="Your API key (pdfping_...)"
-          readonly
-        />
-        <div class="modal-actions">
-          <button onclick="closeCheckout()">Cancel</button>
-          <button
-            id="checkout-submit"
-            class="primary"
-            onclick="submitCheckout()"
-          >
-            Subscribe
-          </button>
-        </div>
-        <div id="checkout-error" class="modal-error hidden"></div>
       </div>
     </div>
 
@@ -1224,14 +987,15 @@
 
     <footer>
       <div class="container">
-        PDFPing - <a href="mailto:contact@uhadev.com">contact@uhadev.com</a>
+        <a href="https://uminda.dev" target="_blank">UHADEV</a> &middot;
+        <a href="https://github.com/Spyboss/pdfping" target="_blank">GitHub</a> &middot;
+        <a href="mailto:contact@uhadev.com">contact@uhadev.com</a>
       </div>
     </footer>
 
     <script>
       let sb = null;
       let lastPdfBlob = null;
-      let checkoutPlan = null;
       let currentUser = null;
       let currentApiData = null;
 
@@ -1290,9 +1054,8 @@
             currentUser = data.user;
             currentApiData = {
               api_key: data.api_key,
-              plan: data.plan,
-              limit: data.limit,
               used: data.used,
+              limit: data.limit,
               remaining: data.remaining,
             };
           } else {
@@ -1333,20 +1096,6 @@
           };
         }
 
-        updatePricingCtas();
-
-        const params = new URLSearchParams(
-          window.location.hash.split("?")[1] || "",
-        );
-        if (params.get("checkout") === "success") {
-          showToast("Subscription activated! Welcome to Pro.", "success");
-          history.replaceState(
-            null,
-            "",
-            window.location.pathname + window.location.hash.split("?")[0],
-          );
-        }
-
         const hash = window.location.hash.split("?")[0];
         if (hash === "#dashboard") {
           if (!signedIn) {
@@ -1370,38 +1119,6 @@
         }
       }
 
-      function updatePricingCtas() {
-        const signedIn = !!currentUser;
-        const plan = currentApiData?.plan || "free";
-        const freeCta = document.getElementById("plan-free-cta");
-        const proCta = document.getElementById("plan-pro-cta");
-        if (signedIn && plan === "free") {
-          freeCta.textContent = "Your plan ✓";
-          freeCta.href = "#dashboard";
-          proCta.textContent = "Subscribe $9/mo";
-          proCta.onclick = function () {
-            checkout("pro");
-          };
-        } else if (signedIn && plan === "pro") {
-          freeCta.textContent = "Downgrade";
-          freeCta.href = "#dashboard";
-          freeCta.onclick = function () {
-            showToast("Contact support to downgrade", "success");
-          };
-          proCta.textContent = "Your plan ✓";
-          proCta.onclick = function () {
-            showToast("You're on Pro", "success");
-          };
-        } else {
-          freeCta.textContent = "Get free key →";
-          freeCta.href = "#signup";
-          proCta.textContent = "Subscribe $9/mo";
-          proCta.onclick = function () {
-            checkout("pro");
-          };
-        }
-      }
-
       function showScreen(name) {
         document
           .querySelectorAll('[id^="screen-"]')
@@ -1415,8 +1132,6 @@
         document.getElementById("apikey-display").value =
           currentApiData.api_key;
         document.getElementById("used-count").textContent = currentApiData.used;
-        document.getElementById("limit-display").textContent =
-          currentApiData.limit;
         document.getElementById("remaining-display").textContent =
           currentApiData.remaining;
         document.getElementById("dashboard-name").textContent =
@@ -1429,24 +1144,6 @@
           da.style.display = "block";
         } else {
           da.style.display = "none";
-        }
-        document.getElementById("checkout-apikey").value =
-          currentApiData.api_key;
-        document.getElementById("checkout-email").value =
-          currentUser?.email || "";
-
-        const plan = currentApiData.plan || "free";
-        const badge = document.getElementById("dashboard-plan-badge");
-        if (plan === "pro") {
-          badge.innerHTML =
-            '<span style="background:#25b86b;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">Pro</span>';
-          document.getElementById("dashboard-upgrade-btn").style.display =
-            "none";
-        } else {
-          badge.innerHTML =
-            '<span style="background:#63636f;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">Free</span>';
-          document.getElementById("dashboard-upgrade-btn").style.display =
-            "inline-block";
         }
       }
 
@@ -1618,81 +1315,6 @@
         a.download = "output.pdf";
         a.click();
         URL.revokeObjectURL(url);
-      }
-
-      function checkout(plan) {
-        checkoutPlan = plan;
-        const label =
-          "Subscribe to " + plan.charAt(0).toUpperCase() + plan.slice(1);
-        document.getElementById("checkout-plan-label").textContent = label;
-        document.getElementById("checkout-error").classList.add("hidden");
-
-        if (currentUser) {
-          document.getElementById("checkout-email").value =
-            currentUser?.email || "";
-          document.getElementById("checkout-apikey").value =
-            currentApiData?.api_key || "";
-          document.getElementById("checkout-modal-desc").textContent =
-            "Confirm upgrade to " +
-            plan.charAt(0).toUpperCase() +
-            plan.slice(1) +
-            " — $9/mo, 500 conversions.";
-          document.getElementById("checkout-submit").textContent =
-            "Confirm & Subscribe";
-        } else {
-          document.getElementById("checkout-email").value = "";
-          document.getElementById("checkout-apikey").value = "";
-          document.getElementById("checkout-modal-desc").textContent =
-            "Enter your email and API key to get started.";
-          document.getElementById("checkout-submit").textContent = "Subscribe";
-        }
-
-        document.getElementById("checkout-modal").classList.remove("hidden");
-      }
-
-      function closeCheckout() {
-        document.getElementById("checkout-modal").classList.add("hidden");
-      }
-
-      async function submitCheckout() {
-        const email =
-          document.getElementById("checkout-email").value.trim() ||
-          currentUser?.email;
-        const apiKey = document.getElementById("checkout-apikey").value.trim();
-        if (!email) return;
-        const btn = document.getElementById("checkout-submit");
-        btn.disabled = true;
-        btn.textContent = "Processing...";
-        document.getElementById("checkout-error").classList.add("hidden");
-        try {
-          const res = await fetch("/api/v1/checkout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              plan: checkoutPlan,
-              email,
-              api_key: apiKey,
-            }),
-          });
-          const data = await res.json();
-          if (data.url) {
-            window.location.href = data.url;
-          } else {
-            document.getElementById("checkout-error").textContent =
-              data.error || "Could not create checkout";
-            document
-              .getElementById("checkout-error")
-              .classList.remove("hidden");
-            btn.disabled = false;
-            btn.textContent = "Subscribe";
-          }
-        } catch {
-          document.getElementById("checkout-error").textContent =
-            "Could not reach server";
-          document.getElementById("checkout-error").classList.remove("hidden");
-          btn.disabled = false;
-          btn.textContent = "Subscribe";
-        }
       }
 
       function showToast(msg, type) {

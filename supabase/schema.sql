@@ -3,10 +3,9 @@ create table if not exists api_keys (
   key text unique not null,
   email text not null,
   user_id uuid references auth.users(id),
-  plan text not null default 'free' check (plan in ('free', 'pro')),
-  limit_count integer not null default 10,
+  plan text not null default 'free',
+  limit_count integer not null default 10000,
   used_count integer not null default 0,
-  lemonsqueezy_customer_id text,
   created_at timestamptz default now()
 );
 
@@ -40,15 +39,6 @@ create policy "Users can view own usage" on usage_logs
       select id from api_keys where user_id = auth.uid()
     )
   );
-
-create or replace function reset_monthly_usage()
-returns void
-language plpgsql
-as $$
-begin
-  update api_keys set used_count = 0;
-end;
-$$;
 
 create or replace function increment(api_key_id uuid)
 returns int

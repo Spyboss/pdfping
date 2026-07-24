@@ -2,7 +2,7 @@
 
 ## Title:
 
-I built a PDF API because I kept hitting Sejda's free tier limit
+I built a free PDF API because I kept hitting Sejda's free tier limit
 
 ## Body:
 
@@ -22,9 +22,10 @@ curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
 ```
 
 - Real Chromium rendering (CSS, fonts, images all work)
-- Free tier: 10 conversions/mo (no credit card)
-- Pro: $9/mo (500)
+- No pricing plans, no credit card — just free
+- Public endpoint works without an API key (50/day per IP)
+- Sign up for a dedicated key with higher limits
 
-Built with Express + Playwright + Lemon Squeezy, deployed on Railway.
+Built with Express + Playwright, deployed on Railway. Open source on GitHub.
 
-Would love any feedback on pricing, docs, or the landing page!
+https://github.com/Spyboss/pdfping

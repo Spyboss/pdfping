@@ -6,10 +6,6 @@ const helmet = require("helmet");
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
 const { WebSocket } = require("ws");
-const {
-  lemonSqueezySetup,
-  createCheckout,
-} = require("@lemonsqueezy/lemonsqueezy.js");
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -28,10 +24,6 @@ if (supabase) {
   console.log("Supabase not configured — using in-memory storage");
 }
 
-if (process.env.LEMONSQUEEZY_API_KEY) {
-  lemonSqueezySetup({ apiKey: process.env.LEMONSQUEEZY_API_KEY });
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ["*"];
@@ -40,108 +32,6 @@ app.use(
   helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false }),
 );
 app.use(cors({ origin: ALLOWED_ORIGINS }));
-
-const PLAN_LIMITS = { free: 10, pro: 500 };
-
-app.post(
-  "/api/v1/webhook",
-  express.raw({ type: "application/json" }),
-  async (req, res) => {
-    const sig = req.headers["x-signature"];
-    if (!sig)
-      return res.status(400).json({ error: "Missing x-signature header" });
-
-    const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
-    if (!secret)
-      return res.status(500).json({ error: "Webhook secret not configured" });
-
-    const hmac = crypto.createHmac("sha256", secret);
-    const digest = hmac.update(req.body).digest("hex");
-    if (sig !== digest)
-      return res.status(401).json({ error: "Invalid signature" });
-
-    const event = JSON.parse(req.body.toString());
-    const eventName = event.meta?.event_name;
-    const { data } = event;
-    const email =
-      data.attributes?.user_email || data.attributes?.customer_email;
-    const included = event.included || [];
-    const orderItem = included.find((i) => i.type === "order-items");
-    const apiKey =
-      event.meta?.custom_data?.api_key ||
-      data.attributes?.first_order_item?.product_options?.custom?.api_key ||
-      data.attributes?.order_item?.product_options?.custom?.api_key ||
-      orderItem?.attributes?.product_options?.custom?.api_key;
-    const variantId = String(
-      data.attributes?.first_order_item?.variant_id ||
-        data.attributes?.variant_id ||
-        orderItem?.attributes?.variant_id ||
-        "",
-    );
-
-    let plan = "free";
-    let limit = 10;
-    if (variantId === process.env.LEMONSQUEEZY_PRO_VARIANT_ID) {
-      plan = "pro";
-      limit = 500;
-    }
-
-    if (
-      [
-        "order_created",
-        "subscription_created",
-        "subscription_updated",
-      ].includes(eventName)
-    ) {
-      if (apiKey) {
-        if (supabase) {
-          await supabase
-            .from("api_keys")
-            .update({ plan, limit_count: limit })
-            .eq("key", apiKey);
-        } else if (apiKeys.has(apiKey)) {
-          const k = apiKeys.get(apiKey);
-          k.plan = plan;
-          k.limit = limit;
-        }
-        console.log(`Upgraded ${email} to ${plan}`);
-      } else if (email && supabase) {
-        await supabase
-          .from("api_keys")
-          .update({ plan, limit_count: limit })
-          .eq("email", email);
-        console.log(`Upgraded ${email} to ${plan} (by email lookup)`);
-      }
-    }
-
-    if (
-      ["subscription_cancelled", "subscription_expired"].includes(eventName)
-    ) {
-      if (apiKey) {
-        if (supabase) {
-          await supabase
-            .from("api_keys")
-            .update({ plan: "free", limit_count: 10 })
-            .eq("key", apiKey);
-        } else if (apiKeys.has(apiKey)) {
-          const k = apiKeys.get(apiKey);
-          k.plan = "free";
-          k.limit = 10;
-        }
-        console.log(`Downgraded ${email} to free`);
-      } else if (email && supabase) {
-        await supabase
-          .from("api_keys")
-          .update({ plan: "free", limit_count: 10 })
-          .eq("email", email);
-        console.log(`Downgraded ${email} to free (by email lookup)`);
-      }
-    }
-
-    res.json({ received: true });
-  },
-);
-
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
@@ -258,7 +148,7 @@ async function ensureApiKeyForUser(user, email) {
       email: email || user.email,
       user_id: user.id,
       plan: "free",
-      limit_count: 10,
+      limit_count: 10000,
       used_count: 0,
     })
     .select()
@@ -273,13 +163,9 @@ const apiKeys = new Map();
 async function loadKeysFromEnv() {
   if (process.env.API_KEYS) {
     process.env.API_KEYS.split(",").forEach((key) => {
-      const [token, plan = "free"] = key.split(":");
+      const [token] = key.split(":");
       if (token) {
-        apiKeys.set(token.trim(), {
-          plan: plan.trim(),
-          limit: PLAN_LIMITS[plan.trim()] || 10,
-          used: 0,
-        });
+        apiKeys.set(token.trim(), { used: 0 });
       }
     });
     console.log(
@@ -287,7 +173,7 @@ async function loadKeysFromEnv() {
     );
   } else {
     const defaultKey = crypto.randomBytes(16).toString("hex");
-    apiKeys.set(defaultKey, { plan: "free", limit: 10, used: 0 });
+    apiKeys.set(defaultKey, { used: 0 });
     console.log(`No API_KEYS set. Generated test key: ${defaultKey}`);
   }
 }
@@ -309,11 +195,6 @@ async function authenticate(req, res, next) {
         error: "Invalid API key. Get one at https://pdfapi.uhadev.com",
       });
     }
-    if (key.used_count >= key.limit_count) {
-      return res.status(429).json({
-        error: `Monthly limit (${key.limit_count}) exceeded. Upgrade at https://pdfapi.uhadev.com`,
-      });
-    }
     req.apiKey = key;
     req.apiKeyToken = token;
     return next();
@@ -324,11 +205,6 @@ async function authenticate(req, res, next) {
     return res
       .status(403)
       .json({ error: "Invalid API key. Get one at https://pdfapi.uhadev.com" });
-  }
-  if (key.used >= key.limit) {
-    return res.status(429).json({
-      error: `Monthly limit (${key.limit}) exceeded. Upgrade at https://pdfapi.uhadev.com`,
-    });
   }
   req.apiKey = key;
   req.apiKeyToken = token;
@@ -390,59 +266,19 @@ app.post("/api/v1/convert", authenticate, async (req, res) => {
 app.get("/api/v1/usage", authenticate, async (req, res) => {
   if (supabase) {
     return res.json({
-      plan: req.apiKey.plan,
-      limit: req.apiKey.limit_count,
       used: req.apiKey.used_count,
+      limit: req.apiKey.limit_count,
       remaining: req.apiKey.limit_count - req.apiKey.used_count,
     });
   }
   res.json({
-    plan: req.apiKey.plan,
-    limit: req.apiKey.limit,
     used: req.apiKey.used,
-    remaining: req.apiKey.limit - req.apiKey.used,
+    remaining: Infinity,
   });
 });
 
-const PLAN_VARIANTS = {
-  pro: process.env.LEMONSQUEEZY_PRO_VARIANT_ID,
-};
-
-app.post("/api/v1/checkout", express.json(), async (req, res) => {
-  const { plan, email, api_key } = req.body;
-  if (!plan || !email) {
-    return res.status(400).json({ error: "plan and email are required" });
-  }
-  const variantId = PLAN_VARIANTS[plan];
-  if (!variantId) {
-    return res.status(400).json({ error: `Unknown plan: ${plan}` });
-  }
-
-  try {
-    const storeId = process.env.LEMONSQUEEZY_STORE_ID;
-    if (!storeId) {
-      return res.status(500).json({ error: "Lemon Squeezy not configured" });
-    }
-
-    const { data, error } = await createCheckout(storeId, variantId, {
-      checkoutData: {
-        email,
-        custom: { api_key: api_key || "" },
-      },
-      productOptions: {
-        redirect_url: `${req.headers.origin || "https://pdfapi.uhadev.com"}/#dashboard?checkout=success`,
-      },
-    });
-
-    if (error) return res.status(500).json({ error: error.message });
-    res.json({ url: data.data.attributes.url });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 const publicLimits = new Map();
-const PUBLIC_LIMIT = 10;
+const PUBLIC_LIMIT = 50;
 
 app.post("/api/v1/convert/public", async (req, res) => {
   const ip =
@@ -452,7 +288,7 @@ app.post("/api/v1/convert/public", async (req, res) => {
   const count = publicLimits.get(ip) || 0;
   if (count >= PUBLIC_LIMIT) {
     return res.status(429).json({
-      error: `Free limit reached (${PUBLIC_LIMIT} conversions). Get a free API key for more.`,
+      error: `Free limit reached (${PUBLIC_LIMIT} conversions/day per IP). Get a free API key for higher limits.`,
     });
   }
   publicLimits.set(ip, count + 1);
@@ -500,8 +336,6 @@ app.post("/api/v1/keys", async (req, res) => {
     console.log(`API key regenerated for ${user.email}`);
     return res.json({
       api_key: newToken,
-      plan: existing.plan,
-      limit: existing.limit_count,
     });
   }
 
@@ -514,7 +348,7 @@ app.post("/api/v1/keys", async (req, res) => {
       key: token,
       email,
       plan: "free",
-      limit_count: 10,
+      limit_count: 10000,
       used_count: 0,
     };
     if (user) insertData.user_id = user.id;
@@ -522,12 +356,10 @@ app.post("/api/v1/keys", async (req, res) => {
     if (error) return res.status(500).json({ error: error.message });
   }
 
-  apiKeys.set(token, { plan: "free", limit: 10, used: 0, email });
+  apiKeys.set(token, { used: 0, email });
   console.log(`New API key generated for ${email}: ${token}`);
   res.json({
     api_key: token,
-    plan: "free",
-    limit: 10,
     message: "Check your usage at /dashboard?api_key=" + token,
   });
 });
@@ -559,9 +391,8 @@ app.get("/api/v1/auth/me", async (req, res) => {
         avatar: user.user_metadata?.avatar_url,
       },
       api_key: apiKey.key,
-      plan: apiKey.plan,
-      limit: apiKey.limit_count,
       used: apiKey.used_count,
+      limit: apiKey.limit_count,
       remaining: apiKey.limit_count - apiKey.used_count,
     });
   } catch (err) {
