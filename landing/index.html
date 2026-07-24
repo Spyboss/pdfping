@@ -67,6 +67,7 @@
         --text-secondary: #8a8a92;
         --accent: #6366f1;
         --accent-end: #8b5cf6;
+        --accent-bright: #818cf8;
         --paper: #fcfcfc;
         --code-bg: #1a1a20;
         --green: #22c55e;
@@ -111,7 +112,7 @@
         color: inherit;
       }
       .logo span {
-        color: var(--accent);
+        color: var(--accent-bright);
       }
       .nav-links {
         display: flex;
@@ -257,7 +258,7 @@
         tab-size: 2;
       }
       .converter-input textarea::placeholder {
-        color: #3f3f46;
+        color: #a1a1aa;
       }
       .converter-output {
         background: var(--paper);
@@ -287,7 +288,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #a1a1aa;
+        color: #52525b;
         font-size: 12px;
         font-family: "JetBrains Mono", monospace;
         text-align: center;
@@ -330,7 +331,7 @@
         margin-bottom: 48px;
       }
       .tagline span {
-        color: var(--accent);
+        color: var(--accent-bright);
       }
       section {
         padding: 48px 0;
@@ -379,10 +380,10 @@
         color: #d4d4d8;
       }
       .code-block .comment {
-        color: #52525b;
+        color: #a1a1aa;
       }
       .code-block .url {
-        color: var(--accent);
+        color: #818cf8;
       }
 
       .dashboard-card {
@@ -556,12 +557,18 @@
         font-size: 13px;
         color: var(--text-secondary);
       }
-      .auth-box .auth-footer a {
+      .auth-box .auth-footer a,
+      .auth-box .auth-footer button {
         color: var(--accent);
         text-decoration: none;
         cursor: pointer;
+        background: none;
+        border: none;
+        font-family: inherit;
+        font-size: 13px;
       }
-      .auth-box .auth-footer a:hover {
+      .auth-box .auth-footer a:hover,
+      .auth-box .auth-footer button:hover {
         text-decoration: underline;
       }
       .auth-error {
@@ -637,11 +644,11 @@
   <body>
     <div class="container">
       <nav>
-        <a href="#home" class="logo"><span>PDF</span>Ping</a>
+        <a href="/" class="logo"><span>PDF</span>Ping</a>
         <div class="nav-links">
           <a href="/docs">Docs</a>
-          <a href="#dashboard" id="nav-dashboard" class="hidden">Dashboard</a>
-          <a href="#login" id="nav-signin">Sign In</a>
+          <button onclick="showScreen('dashboard')" id="nav-dashboard" class="hidden">Dashboard</button>
+          <button onclick="showScreen('login')" id="nav-signin">Sign In</button>
           <div id="nav-user" class="nav-dropdown hidden">
             <img
               id="nav-avatar"
@@ -649,13 +656,14 @@
               onclick="toggleDropdown()"
             />
             <div class="nav-dropdown-menu" id="nav-dropdown-menu">
-              <a href="#dashboard">Dashboard</a>
+              <button onclick="showScreen('dashboard')">Dashboard</button>
               <button class="danger" onclick="signOut()">Sign Out</button>
             </div>
           </div>
         </div>
       </nav>
 
+      <main>
       <div id="screen-home">
         <div class="converter">
           <div class="converter-header">
@@ -843,7 +851,7 @@
             </button>
             <div class="auth-footer">
               Don't have an account?
-              <a onclick="showScreen('signup')">Sign up</a>
+              <button onclick="showScreen('signup')">Sign up</button>
             </div>
           </div>
         </div>
@@ -905,7 +913,7 @@
             </button>
             <div class="auth-footer">
               Already have an account?
-              <a onclick="showScreen('login')">Sign in</a>
+              <button onclick="showScreen('login')">Sign in</button>
             </div>
           </div>
         </div>
@@ -945,7 +953,7 @@
                 ></div>
               </div>
             </div>
-            <label
+            <label for="apikey-display"
               style="
                 font-size: 12px;
                 color: var(--text-secondary);
@@ -972,6 +980,7 @@
           </div>
         </section>
       </div>
+      </main>
     </div>
 
     <div id="toast" class="toast">
