@@ -1,15 +1,11 @@
-# Post this to r/webdev at https://new.reddit.com/r/webdev/submit
+Showoff Saturday: I made a free HTML-to-PDF API. One POST, no queues.
 
-## Title:
-Showoff Saturday: I made a free API that converts HTML to PDF in one POST request
+https://pdfapi.uhadev.com
 
-## Body:
-Just shipped PDFPing — a zero-config PDF generation API.
+LLMs generate HTML with print CSS. Converting that to a PDF always meant extra tools with rate limits. So I built one without any.
 
-Why: LLMs are great at generating HTML with print CSS, but converting that to an actual PDF always required extra tools with rate limits. So I built my own. And made it free.
-
-```javascript
-fetch('https://pdfapi.uhadev.com/api/v1/convert', {
+```
+const res = await fetch('https://pdfapi.uhadev.com/api/v1/convert', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer YOUR_KEY',
@@ -19,10 +15,11 @@ fetch('https://pdfapi.uhadev.com/api/v1/convert', {
     html: '<h1>Report</h1><p>Generated via API</p>'
   })
 })
-.then(res => res.blob())
-.then(blob => saveAs(blob, 'report.pdf'));
+const blob = await res.blob()
 ```
 
-No pricing, no credit card, no tiers. Chrome DevTools-faithful PDF rendering thanks to Playwright + Chromium. Sign up at https://pdfapi.uhadev.com for a free API key, or use the public endpoint directly.
+Playwright + Chromium under the hood. Same rendering you get in Chrome DevTools. Send HTML or a URL, get a PDF back.
 
-Open source: https://github.com/Spyboss/pdfping
+Free API key at the link above. Public endpoint also available (50/day per IP, no key needed).
+
+https://github.com/Spyboss/pdfping

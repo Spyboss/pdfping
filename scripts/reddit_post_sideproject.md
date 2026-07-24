@@ -1,31 +1,22 @@
-# Post this to r/SideProject at https://new.reddit.com/r/SideProject/submit
+I built a free PDF API because Sejda's free tier kept resetting my progress
 
-## Title:
+https://pdfapi.uhadev.com
 
-I built a free PDF API because I kept hitting Sejda's free tier limit
+I was building an invoicing tool and needed PDFs from HTML. Every time I asked an LLM to write print CSS, I'd paste it into Sejda. Three conversions later I'd hit the limit and have to wait hours.
 
-## Body:
-
-Hey r/SideProject,
-
-I was building an invoicing tool and needed to generate PDFs programmatically. Every time I asked Claude/ChatGPT for HTML with print CSS, I'd paste it into Sejda to convert — but I'd hit the 3-free-conversions limit and have to wait hours.
-
-So I built PDFPing (https://pdfapi.uhadev.com).
-
-It's one API call:
+So I built my own API. One POST request, PDF comes back.
 
 ```
 curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
   -H "Authorization: Bearer YOUR_KEY" \
-  -d '{"html": "<h1>Invoice</h1><p>...</p>"}' \
+  -d '{"html": "<h1>Invoice</h1>"}' \
   -o invoice.pdf
 ```
 
-- Real Chromium rendering (CSS, fonts, images all work)
-- No pricing plans, no credit card — just free
-- Public endpoint works without an API key (50/day per IP)
-- Sign up for a dedicated key with higher limits
+Real Chromium rendering. CSS, fonts, images — all of it works.
 
-Built with Express + Playwright, deployed on Railway. Open source on GitHub.
+Public endpoint works without a key (50/day per IP). Sign up for a free dedicated key with higher limits — no credit card.
+
+Express + Playwright, deployed on Railway. Open source on GitHub.
 
 https://github.com/Spyboss/pdfping
