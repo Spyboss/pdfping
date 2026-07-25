@@ -1,6 +1,8 @@
 create table if not exists api_keys (
   id uuid primary key default gen_random_uuid(),
-  key text unique not null,
+  key text,
+  key_hash text unique not null,
+  key_prefix text,
   email text not null,
   user_id uuid references auth.users(id),
   plan text not null default 'free',
@@ -9,7 +11,7 @@ create table if not exists api_keys (
   created_at timestamptz default now()
 );
 
-create index if not exists idx_api_keys_key on api_keys(key);
+create index if not exists idx_api_keys_key_hash on api_keys(key_hash);
 create index if not exists idx_api_keys_user on api_keys(user_id);
 
 create table if not exists usage_logs (
@@ -44,11 +46,8 @@ create or replace function increment(api_key_id uuid)
 returns int
 language plpgsql
 as $$
-declare
-  current int;
 begin
-  select used_count into current from api_keys where id = api_key_id;
-  update api_keys set used_count = current + 1 where id = api_key_id;
-  return current + 1;
+  update api_keys set used_count = used_count + 1 where id = api_key_id;
+  return (select used_count from api_keys where id = api_key_id);
 end;
 $$;
