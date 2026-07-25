@@ -7,12 +7,14 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 ENV CHROMIUM_PATH=/usr/bin/chromium
+ENV NODE_ENV=production
 
 WORKDIR /app
 COPY api/package*.json ./
 RUN npm install --omit=dev
 COPY api/ ./
-COPY landing/ ../landing/
+COPY landing/ /landing/
+COPY demo-invoice.html /app/
 
 EXPOSE 3000
 CMD ["node", "server.js"]

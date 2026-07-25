@@ -104,8 +104,8 @@ async function getBrowser() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--single-process",
         "--disable-gpu",
+        "--disable-software-rasterizer",
         "--disable-background-networking",
         "--disable-background-timer-throttling",
         "--disable-backgrounding-occluded-windows",
@@ -466,8 +466,11 @@ app.get("/docs", (req, res) => {
   res.sendFile(path.join(__dirname, "../landing/docs.html"));
 });
 
+app.get("/demo-invoice.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "demo-invoice.html"));
+});
+
 app.use(express.static(path.join(__dirname, "../landing")));
-app.use(express.static(path.join(__dirname, "..")));
 
 const keyGenMutex = new Mutex();
 
