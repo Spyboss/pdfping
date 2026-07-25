@@ -66,6 +66,21 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 const MAX_HTML_SIZE = 1024 * 1024;
 const MAX_URL_LENGTH = 2048;
 
+const metrics = {
+  totalRequests: 0,
+  successfulConversions: 0,
+  failedConversions: 0,
+  totalRenderTimeMs: 0,
+  renderCount: 0,
+  minRenderTimeMs: Infinity,
+  maxRenderTimeMs: 0,
+  browserLaunches: 0,
+  browserReuses: 0,
+  peakContexts: 0,
+  failuresByReason: {},
+  recentFailures: [],
+};
+
 function isValidUrl(str) {
   try {
     const url = new URL(str);
@@ -89,6 +104,7 @@ async function getBrowser() {
         clearTimeout(browserIdleTimer);
         browserIdleTimer = null;
       }
+      metrics.browserReuses++;
       return browser;
     }
     if (browser) {
@@ -97,6 +113,7 @@ async function getBrowser() {
       } catch {}
       browser = null;
     }
+    metrics.browserLaunches++;
     browser = await chromium.launch({
       headless: true,
       executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
@@ -147,7 +164,16 @@ async function withBrowserPage(fn) {
   const page = await context.newPage();
   try {
     browserContextCount++;
+    if (browserContextCount > metrics.peakContexts) {
+      metrics.peakContexts = browserContextCount;
+    }
+    const t0 = Date.now();
     const result = await fn(page);
+    const elapsed = Date.now() - t0;
+    metrics.totalRenderTimeMs += elapsed;
+    metrics.renderCount++;
+    if (elapsed < metrics.minRenderTimeMs) metrics.minRenderTimeMs = elapsed;
+    if (elapsed > metrics.maxRenderTimeMs) metrics.maxRenderTimeMs = elapsed;
     return result;
   } finally {
     await page.close();
@@ -369,6 +395,7 @@ app.post("/api/v1/convert", authenticate, async (req, res) => {
 
   try {
     const pdf = await renderPdf(html, url, options);
+    metrics.successfulConversions++;
     const keyId = supabase ? req.apiKey.id : null;
     await incrementUsage(keyId);
     await logUsage(keyId, "/api/v1/convert", 200);
@@ -376,6 +403,11 @@ app.post("/api/v1/convert", authenticate, async (req, res) => {
     res.setHeader("Content-Disposition", 'inline; filename="output.pdf"');
     res.send(pdf);
   } catch (err) {
+    metrics.failedConversions++;
+    const reason = err.message || "Unknown error";
+    metrics.failuresByReason[reason] = (metrics.failuresByReason[reason] || 0) + 1;
+    metrics.recentFailures.push({ reason, timestamp: new Date().toISOString() });
+    if (metrics.recentFailures.length > 100) metrics.recentFailures.shift();
     await logUsage(
       supabase ? req.apiKey.id : null,
       "/api/v1/convert",
@@ -452,10 +484,16 @@ app.post(
 
     try {
       const pdf = await renderPdf(html, url, { wait: 1 });
+      metrics.successfulConversions++;
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", 'inline; filename="output.pdf"');
       res.send(pdf);
     } catch (err) {
+      metrics.failedConversions++;
+      const reason = err.message || "Unknown error";
+      metrics.failuresByReason[reason] = (metrics.failuresByReason[reason] || 0) + 1;
+      metrics.recentFailures.push({ reason, timestamp: new Date().toISOString() });
+      if (metrics.recentFailures.length > 100) metrics.recentFailures.shift();
       console.error("Public conversion failed:", err.message);
       res.status(500).json({ error: "Conversion failed" });
     }
@@ -547,6 +585,29 @@ app.get("/api/v1/config", (req, res) => {
   });
 });
 
+app.get("/api/v1/metrics", authenticate, async (req, res) => {
+  const avgRender =
+    metrics.renderCount > 0
+      ? Math.round(metrics.totalRenderTimeMs / metrics.renderCount)
+      : 0;
+  res.json({
+    totalRequests: metrics.totalRequests,
+    successfulConversions: metrics.successfulConversions,
+    failedConversions: metrics.failedConversions,
+    averageRenderTimeMs: avgRender,
+    minRenderTimeMs:
+      metrics.minRenderTimeMs === Infinity ? 0 : metrics.minRenderTimeMs,
+    maxRenderTimeMs: metrics.maxRenderTimeMs,
+    renderCount: metrics.renderCount,
+    browserLaunches: metrics.browserLaunches,
+    browserReuses: metrics.browserReuses,
+    activeContexts: browserContextCount,
+    peakContexts: metrics.peakContexts,
+    failuresByReason: metrics.failuresByReason,
+    recentFailures: metrics.recentFailures.slice(-20),
+  });
+});
+
 app.get("/api/v1/auth/me", async (req, res) => {
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith("Bearer ")) {
@@ -577,8 +638,9 @@ app.get("/api/v1/auth/me", async (req, res) => {
   }
 });
 
+const pkgVersion = require("./package.json").version;
 app.get("/health", (req, res) =>
-  res.json({ status: "ok", version: "1.0.0" }),
+  res.json({ status: "ok", version: pkgVersion }),
 );
 
 app.use((err, req, res, next) => {

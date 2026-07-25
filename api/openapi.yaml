@@ -1,0 +1,435 @@
+openapi: 3.0.3
+info:
+  title: PDFPing API
+  description: |
+    Convert HTML or URLs to PDF with a single POST request.
+    Chromium-powered rendering — full CSS, font, and image support.
+    Open source (MIT) at https://github.com/Spyboss/pdfping
+  version: 1.0.0
+  contact:
+    name: UHADEV
+    email: itsuhadev@gmail.com
+    url: https://uminda.dev
+servers:
+  - url: https://pdfapi.uhadev.com
+    description: Production
+  - url: http://localhost:3000
+    description: Local development
+paths:
+  /api/v1/convert:
+    post:
+      summary: Convert HTML or URL to PDF
+      description: >
+        Requires a valid API key in the Authorization header.
+        Returns the PDF binary. Supports custom page format, margins,
+        landscape orientation, and render delay.
+      operationId: convertAuthenticated
+      tags:
+        - Conversion
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConvertRequest"
+      responses:
+        "200":
+          description: PDF document
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/v1/convert/public:
+    post:
+      summary: Convert HTML or URL to PDF (no API key required)
+      description: >
+        Rate-limited to 50 conversions per day per IP address.
+        Does not require authentication. Suitable for testing and
+        low-volume use.
+      operationId: convertPublic
+      tags:
+        - Conversion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConvertRequest"
+      responses:
+        "200":
+          description: PDF document
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "429":
+          $ref: "#/components/responses/RateLimited"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /api/v1/keys:
+    post:
+      summary: Generate a new API key
+      description: |
+        Creates a new API key for the given email address.
+        Rate-limited to 10 requests per hour per IP address.
+        The key is shown once and should be stored securely.
+      operationId: generateApiKey
+      tags:
+        - Keys
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email address for the key owner
+                regenerate:
+                  type: boolean
+                  description: >
+                    If true, replaces the existing key for the authenticated
+                    user. Requires a valid Supabase auth session in the
+                    Authorization header.
+              example:
+                email: user@example.com
+      responses:
+        "200":
+          description: API key created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                    example: pdfping_a1b2c3d4e5f6...
+                  message:
+                    type: string
+                    example: Store this key securely. It will not be shown again.
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          description: Key already exists for this email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Key already exists
+        "429":
+          $ref: "#/components/responses/RateLimited"
+  /api/v1/usage:
+    get:
+      summary: Get API key usage statistics
+      description: >
+        Returns the current usage count, limit, and remaining
+        conversions for the authenticated API key.
+      operationId: getUsage
+      tags:
+        - Keys
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Usage statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  used:
+                    type: integer
+                    example: 42
+                  limit:
+                    type: integer
+                    example: 10000
+                  remaining:
+                    type: integer
+                    example: 9958
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v1/auth/me:
+    get:
+      summary: Get current user profile and API key
+      description: >
+        Returns the authenticated user's profile, API key, and
+        usage statistics. Requires a Supabase auth session token.
+        Returns `{ "user": null }` for unauthenticated requests.
+      operationId: getMe
+      tags:
+        - Auth
+      security:
+        - BearerToken: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      email:
+                        type: string
+                        format: email
+                      name:
+                        type: string
+                      avatar:
+                        type: string
+                        nullable: true
+                  api_key:
+                    type: string
+                    nullable: true
+                  used:
+                    type: integer
+                  limit:
+                    type: integer
+                  remaining:
+                    type: integer
+  /api/v1/config:
+    get:
+      summary: Get client-side configuration
+      description: >
+        Returns the Supabase URL and anonymous key for client-side
+        authentication. Used by the landing page to initialize the
+        Supabase client.
+      operationId: getConfig
+      tags:
+        - Config
+      responses:
+        "200":
+          description: Configuration object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  supabaseUrl:
+                    type: string
+                  anonKey:
+                    type: string
+                  siteUrl:
+                    type: string
+  /api/v1/metrics:
+    get:
+      summary: Get operational metrics (internal)
+      description: >
+        Returns in-memory metrics about browser pool performance,
+        render times, error rates, and current load. Requires a
+        valid API key with admin privileges.
+      operationId: getMetrics
+      tags:
+        - Internal
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Metrics snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Metrics"
+  /health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      tags:
+        - System
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+                    example: 1.0.0
+  /docs:
+    get:
+      summary: API documentation page
+      operationId: getDocs
+      tags:
+        - System
+      responses:
+        "200":
+          description: HTML documentation page
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+      description: API key prefixed with "pdfping_" (e.g. pdfping_a1b2c3d4...)
+    BearerToken:
+      type: http
+      scheme: bearer
+      description: Supabase JWT session token
+  schemas:
+    ConvertRequest:
+      type: object
+      oneOf:
+        - required:
+            - html
+        - required:
+            - url
+      properties:
+        html:
+          type: string
+          maxLength: 1048576
+          description: HTML string to render. Max 1 MB.
+        url:
+          type: string
+          maxLength: 2048
+          description: URL to render. Must be http:// or https://.
+        options:
+          type: object
+          properties:
+            format:
+              type: string
+              enum:
+                - A3
+                - A4
+                - A5
+                - Letter
+                - Legal
+                - Tabloid
+              default: A4
+            landscape:
+              type: boolean
+              default: false
+            printBackground:
+              type: boolean
+              default: true
+            margin:
+              type: string
+              default: 0mm
+              description: CSS margin value (e.g. "10mm", "0.5in")
+            wait:
+              type: number
+              default: 1
+              minimum: 0
+              maximum: 30
+              description: Seconds to wait after page load before generating PDF
+      example:
+        html: "<h1>Invoice</h1><p>Amount: $100</p>"
+        options:
+          format: A4
+          margin: 10mm
+    Metrics:
+      type: object
+      properties:
+        totalRequests:
+          type: integer
+        successfulConversions:
+          type: integer
+        failedConversions:
+          type: integer
+        averageRenderTimeMs:
+          type: number
+        minRenderTimeMs:
+          type: number
+        maxRenderTimeMs:
+          type: number
+        browserLaunches:
+          type: integer
+        browserReuses:
+          type: integer
+        activeContexts:
+          type: integer
+        maxConcurrentContexts:
+          type: integer
+        failuresByReason:
+          type: object
+          additionalProperties:
+            type: integer
+        recentFailures:
+          type: array
+          items:
+            type: object
+            properties:
+              reason:
+                type: string
+              timestamp:
+                type: string
+                format: date-time
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    Forbidden:
+      description: Invalid or deactivated API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

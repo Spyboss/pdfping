@@ -350,7 +350,9 @@
         <a href="#parameters">Request Parameters</a>
         <a href="#responses">Responses &amp; Errors</a>
         <a href="#examples">Code Examples</a>
+        <a href="#sdks">SDKs &amp; Clients</a>
         <a href="#rate-limits">Rate Limits</a>
+        <a href="#spec">OpenAPI Spec</a>
       </div>
 
       <h2 id="quickstart">Quick Start</h2>
@@ -567,6 +569,75 @@
         <div>    f.write(res.content)</div>
       </div>
 
+      <h2 id="sdks">SDKs &amp; Clients</h2>
+
+      <h3>JavaScript (npm)</h3>
+      <p>Install the <a href="https://www.npmjs.com/package/pdfping-api" target="_blank"><code>pdfping-api</code></a> package:</p>
+      <div class="code-block">
+        <div class="comment"># npm install pdfping-api</div>
+        <br />
+        <div>import { PDFPing } from <span class="string">"pdfping-api"</span>;</div>
+        <br />
+        <div>const client = new PDFPing(<span class="string">"pdfping_YOUR_KEY"</span>);</div>
+        <br />
+        <div class="comment">// Convert HTML to PDF</div>
+        <div>const pdf = await client.convert({</div>
+        <div>  html: <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>,</div>
+        <div>  options: { format: <span class="string">"A4"</span>, landscape: false },</div>
+        <div>});</div>
+        <div>require("fs").writeFileSync("output.pdf", pdf);</div>
+        <br />
+        <div class="comment">// Convert a URL</div>
+        <div>const pdf2 = await client.convert({</div>
+        <div>  url: <span class="string">"https://example.com"</span>,</div>
+        <div>});</div>
+      </div>
+
+      <h3>Python (pip)</h3>
+      <p>Install the <a href="https://pypi.org/project/pdfping/" target="_blank"><code>pdfping</code></a> package:</p>
+      <div class="code-block">
+        <div class="comment"># pip install pdfping</div>
+        <br />
+        <div>from pdfping import PDFPing</div>
+        <br />
+        <div>client = PDFPing(<span class="string">"pdfping_YOUR_KEY"</span>)</div>
+        <br />
+        <div class="comment"># Convert HTML to PDF</div>
+        <div>client.convert({</div>
+        <div>    <span class="key">"html"</span>: <span class="string">"&lt;h1&gt;Hello World&lt;/h1&gt;"</span>,</div>
+        <div>    <span class="key">"options"</span>: { <span class="key">"format"</span>: <span class="string">"A4"</span> },</div>
+        <div>}, <span class="string">"output.pdf"</span>)</div>
+        <br />
+        <div class="comment"># Convert a URL</div>
+        <div>client.convert({ <span class="key">"url"</span>: <span class="string">"https://example.com"</span> }, <span class="string">"page.pdf"</span>)</div>
+      </div>
+
+      <h3>curl</h3>
+      <div class="code-block">
+        <div class="comment"># Authenticated</div>
+        <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span> \</div>
+        <div>  -H <span class="string">"Authorization: Bearer pdfping_YOUR_KEY"</span> \</div>
+        <div>  -H "Content-Type: application/json" \</div>
+        <div>  -d '{</div>
+        <div>    "html": "&lt;h1&gt;Hello World&lt;/h1&gt;",</div>
+        <div>    "options": { "format": "A4" }</div>
+        <div>  }' \</div>
+        <div>  -o output.pdf</div>
+        <br />
+        <div class="comment"># No API key needed (rate-limited)</div>
+        <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert/public</span> \</div>
+        <div>  -H "Content-Type: application/json" \</div>
+        <div>  -d '{ "html": "&lt;h1&gt;Hello&lt;/h1&gt;" }' \</div>
+        <div>  -o output.pdf</div>
+        <br />
+        <div class="comment"># Convert a URL</div>
+        <div>curl -X POST <span class="url">https://pdfapi.uhadev.com/api/v1/convert</span> \</div>
+        <div>  -H <span class="string">"Authorization: Bearer pdfping_YOUR_KEY"</span> \</div>
+        <div>  -H "Content-Type: application/json" \</div>
+        <div>  -d '{ "url": "https://example.com" }' \</div>
+        <div>  -o page.pdf</div>
+      </div>
+
       <h2 id="rate-limits">Rate Limits</h2>
       <table class="param-table">
         <thead>
@@ -594,9 +665,25 @@
         <a href="https://github.com/Spyboss/pdfping" target="_blank">GitHub</a>.
       </p>
 
+      <h2 id="spec">OpenAPI Specification</h2>
+      <p>
+        A machine-readable OpenAPI 3.0 specification is available at
+        <a href="https://raw.githubusercontent.com/Spyboss/pdfping/main/api/openapi.yaml" target="_blank"><code>api/openapi.yaml</code></a>.
+        Import it into Postman, Insomnia, or any OpenAPI-compatible client for
+        auto-generated SDKs and interactive testing.
+      </p>
+      <div class="code-block">
+        <div class="comment"># Use with Swagger UI</div>
+        <div>docker run -p 8080:8080 swaggerapi/swagger-ui</div>
+        <div class="comment"># Then open http://localhost:8080 and paste:</div>
+        <div class="url">https://raw.githubusercontent.com/Spyboss/pdfping/main/api/openapi.yaml</div>
+      </div>
+
       <div class="info-box">
         <strong>Open source:</strong> PDFPing is MIT-licensed.
-        <a href="https://github.com/Spyboss/pdfping" target="_blank">Star on GitHub</a>.
+        <a href="https://github.com/Spyboss/pdfping" target="_blank">Star on GitHub</a> &middot;
+        <a href="BENCHMARKS.md" target="_blank">Benchmarks</a> &middot;
+        <a href="CHANGELOG.md" target="_blank">Changelog</a>
       </div>
     </div>
 
