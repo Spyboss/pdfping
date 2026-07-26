@@ -7,14 +7,16 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 ENV CHROMIUM_PATH=/usr/bin/chromium
-ENV NODE_ENV=production
 
 WORKDIR /app
 COPY api/package*.json ./
-RUN npm install
+RUN npm ci --include=dev
 COPY api/ ./
-RUN npx tsc
+RUN npm run build
 RUN npm prune --omit=dev
+
+ENV NODE_ENV=production
+
 COPY landing/ /landing/
 COPY demo-invoice.html /demo-invoice.html
 
