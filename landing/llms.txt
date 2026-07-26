@@ -6,7 +6,14 @@
 
 - [API Reference](https://pdfapi.uhadev.com/docs): Full API docs with endpoints, parameters, code examples (curl, JavaScript, Python), error codes, and rate limits.
 - [Landing Page](https://pdfapi.uhadev.com/): Live HTML-to-PDF converter, feature overview, sign in for API key.
+- [Playground](https://pdfapi.uhadev.com/playground): Interactive API playground to test endpoints.
 - [GitHub Repository](https://github.com/Spyboss/pdfping): Source code, self-hosting guide, MIT license.
+
+## Blog
+
+- [Free Online HTML to PDF Converter](https://pdfapi.uhadev.com/blog/free-online-html-to-pdf-converter): Convert HTML to PDF online for free without signup. No watermark, no limits.
+- [HTML to PDF API Comparison 2026](https://pdfapi.uhadev.com/blog/html-to-pdf-api-comparison): Compare PDFPing vs PDFShift vs PageBolt vs DocRaptor vs PDFCrowd. Pricing, features, best picks.
+- [How to Convert HTML to PDF in 2026 - 4 Ways Compared](https://pdfapi.uhadev.com/blog/convert-html-to-pdf-4-ways): Browser print, online tools, API services, and self-hosted solutions compared.
 
 ## Quick Start
 
@@ -28,6 +35,21 @@ curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
   -d '{ "html": "<h1>Hello World</h1>" }' \
   -o output.pdf
 ```
+
+## Pricing
+
+- Free: 10 conversions/month
+- Pro: $9/month — 500 conversions
+
+## About
+
+- **Type**: WebApplication
+- **Category**: Developer Tools / PDF Generation
+- **Language**: English
+- **Audience**: Developers, indie makers, small businesses
+- **Pricing**: Free + Paid
+- **License**: MIT
+- **Last Updated**: 2026-07
 
 ## Contact
 
