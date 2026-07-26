@@ -1,28 +1,31 @@
 # Post this to r/webdev at https://new.reddit.com/r/webdev/submit
 
 ## Title:
-Showoff Saturday: I made a free API that converts HTML to PDF in one POST request
+Showoff Saturday: Open-sourced a PDF generation API — HTML to PDF in one POST
 
 ## Body:
-Just shipped PDFPing — a zero-config PDF generation API.
+Just shipped PDFPing — a zero-config HTML to PDF API that's now open source (MIT).
 
-Why: LLMs are great at generating HTML with print CSS, but converting that to an actual PDF always required extra tools with rate limits. So I built my own. And made it free.
+The problem: LLMs generate great HTML with print CSS, but converting that to a real PDF always meant hitting free-tier walls or pulling out a credit card.
+
+So I built this:
 
 ```javascript
-fetch('https://pdfapi.uhadev.com/api/v1/convert', {
+fetch('https://pdfapi.uhadev.com/api/v1/convert/public', {
   method: 'POST',
-  headers: {
-    'Authorization': 'Bearer YOUR_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    html: '<h1>Report</h1><p>Generated via API</p>'
-  })
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ html: '<h1>Report</h1><p>Generated via API</p>' })
 })
 .then(res => res.blob())
 .then(blob => saveAs(blob, 'report.pdf'));
 ```
 
-No pricing, no credit card, no tiers. Chrome DevTools-faithful PDF rendering thanks to Playwright + Chromium. Sign up at https://pdfapi.uhadev.com for a free API key, or use the public endpoint directly.
+- No API key needed for the public endpoint (50 conversions/day per IP)
+- Full Chromium rendering — CSS Grid, Flexbox, web fonts, JavaScript
+- Free tier for developers who sign up
+- Open source if you want to self-host
 
-Open source: https://github.com/Spyboss/pdfping
+Built with Express + Playwright + Chromium. Deployed on Railway.
+
+https://github.com/Spyboss/pdfping
+https://pdfapi.uhadev.com

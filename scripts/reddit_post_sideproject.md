@@ -2,30 +2,28 @@
 
 ## Title:
 
-I built a free PDF API because I kept hitting Sejda's free tier limit
+I open-sourced my HTML to PDF API — free tier, MIT license, Chromium rendering
 
 ## Body:
 
 Hey r/SideProject,
 
-I was building an invoicing tool and needed to generate PDFs programmatically. Every time I asked Claude/ChatGPT for HTML with print CSS, I'd paste it into Sejda to convert — but I'd hit the 3-free-conversions limit and have to wait hours.
+I kept finding myself needing to convert HTML to PDF for side projects — invoices, reports, certificates. Every service had low free limits or required a credit card upfront.
 
-So I built PDFPing (https://pdfapi.uhadev.com).
+So I built PDFPing (https://pdfapi.uhadev.com) and open-sourced it.
 
-It's one API call:
-
+One API call:
 ```
-curl -X POST https://pdfapi.uhadev.com/api/v1/convert \
-  -H "Authorization: Bearer YOUR_KEY" \
+curl -X POST https://pdfapi.uhadev.com/api/v1/convert/public \
+  -H "Content-Type: application/json" \
   -d '{"html": "<h1>Invoice</h1><p>...</p>"}' \
-  -o invoice.pdf
+  -o output.pdf
 ```
 
-- Real Chromium rendering (CSS, fonts, images all work)
-- No pricing plans, no credit card — just free
-- Public endpoint works without an API key (50/day per IP)
-- Sign up for a dedicated key with higher limits
+Free tier is 50 conversions/day without even signing up. Sign up for a dedicated key with a dashboard.
 
-Built with Express + Playwright, deployed on Railway. Open source on GitHub.
+Tech stack: Express, Playwright + Chromium, Supabase, Lemon Squeezy. Self-hostable if you need to (MIT license). Deployed on Railway.
 
 https://github.com/Spyboss/pdfping
+
+Would love feedback on the docs, the pricing, or anything else that feels off.
