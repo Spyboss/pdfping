@@ -16,7 +16,7 @@ COPY api/ ./
 RUN npx tsc
 RUN npm prune --omit=dev
 COPY landing/ /landing/
-COPY demo-invoice.html /app/
+COPY demo-invoice.html /demo-invoice.html
 
 EXPOSE 3000
 CMD ["node", "dist/server.js"]

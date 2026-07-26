@@ -11,8 +11,8 @@ const { createClient } = require("@supabase/supabase-js");
 const WebSocket = require("ws");
 const { Mutex } = require("async-mutex");
 const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
-const PROJECT_ROOT = path.resolve(process.cwd(), "..");
-const LANDING_DIR = path.join(PROJECT_ROOT, "landing");
+const PROJECT_ROOT = process.cwd();
+const LANDING_DIR = path.resolve(PROJECT_ROOT, "../landing");
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
@@ -498,7 +498,7 @@ app.get("/playground", (req, res) => {
     res.sendFile(path.join(LANDING_DIR, "playground.html"));
 });
 app.get("/demo-invoice.html", (req, res) => {
-    res.sendFile(path.join(PROJECT_ROOT, "demo-invoice.html"));
+    res.sendFile(path.resolve(PROJECT_ROOT, "../demo-invoice.html"));
 });
 app.use(express.static(LANDING_DIR));
 const keyGenMutex = new Mutex();
@@ -617,7 +617,7 @@ app.get("/api/v1/auth/me", async (req, res) => {
         res.status(500).json({ error: "Failed to fetch user data" });
     }
 });
-const pkgVersion = require(path.join(PROJECT_ROOT, "api", "package.json")).version;
+const pkgVersion = require(path.join(PROJECT_ROOT, "package.json")).version;
 app.get("/health", (req, res) => res.json({ status: "ok", version: pkgVersion }));
 app.use((err, req, res, next) => {
     if (err.type === "entity.parse.failed") {
