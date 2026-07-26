@@ -3,12 +3,15 @@ const express = require("express");
 const { chromium } = require("playwright");
 const cors = require("cors");
 const helmet = require("helmet");
-const crypto = require("crypto");
+import crypto = require("node:crypto");
 const path = require("path");
 const { createClient } = require("@supabase/supabase-js");
-const { WebSocket } = require("ws");
+const WebSocket = require("ws");
 const { Mutex } = require("async-mutex");
 const { rateLimit, ipKeyGenerator } = require("express-rate-limit");
+
+const PROJECT_ROOT = path.resolve(process.cwd(), "..");
+const LANDING_DIR = path.join(PROJECT_ROOT, "landing");
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
@@ -57,8 +60,37 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || ["*"];
 app.set("env", process.env.NODE_ENV || "production");
 app.disable("x-powered-by");
 app.use(
-  helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false }),
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "fonts.googleapis.com"],
+        fontSrc: ["fonts.gstatic.com"],
+        scriptSrc: ["'self'", "unpkg.com", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'", "https://*.supabase.co"],
+        frameAncestors: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+      },
+    },
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    strictTransportSecurity: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  }),
 );
+
+app.use((req, res, next) => {
+  res.setHeader(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=()",
+  );
+  next();
+});
 app.use(cors({ origin: ALLOWED_ORIGINS }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -116,7 +148,7 @@ async function getBrowser() {
     metrics.browserLaunches++;
     browser = await chromium.launch({
       headless: true,
-      executablePath: process.env.CHROMIUM_PATH || "/usr/bin/chromium",
+      executablePath: process.env.CHROMIUM_PATH || chromium.executablePath(),
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -344,14 +376,20 @@ async function authenticate(req, res, next) {
   next();
 }
 
-async function renderPdf(html, url, options = {}) {
+async function renderPdf(html?: string, url?: string, options: Record<string, unknown> = {}) {
   const {
     format = "A4",
     landscape = false,
     printBackground = true,
     wait = 1,
     margin = "0mm",
-  } = options;
+  } = options as {
+    format?: string;
+    landscape?: boolean;
+    printBackground?: boolean;
+    wait?: number;
+    margin?: string;
+  };
 
   return withBrowserPage(async (page) => {
     await page.setViewportSize({ width: 794, height: 1123 });
@@ -497,18 +535,18 @@ app.post(
 );
 
 app.get("/docs", (req, res) => {
-  res.sendFile(path.join(__dirname, "../landing/docs.html"));
+  res.sendFile(path.join(LANDING_DIR, "docs.html"));
 });
 
 app.get("/playground", (req, res) => {
-  res.sendFile(path.join(__dirname, "../landing/playground.html"));
+  res.sendFile(path.join(LANDING_DIR, "playground.html"));
 });
 
 app.get("/demo-invoice.html", (req, res) => {
-  res.sendFile(path.join(__dirname, "demo-invoice.html"));
+  res.sendFile(path.join(PROJECT_ROOT, "demo-invoice.html"));
 });
 
-app.use(express.static(path.join(__dirname, "../landing")));
+app.use(express.static(LANDING_DIR));
 
 const keyGenMutex = new Mutex();
 
@@ -550,7 +588,7 @@ app.post("/api/v1/keys", keyGenLimiter, async (req, res) => {
     const keyHash = hashApiKey(rawKey);
 
     if (supabase) {
-      const insertData = {
+      const insertData: Record<string, unknown> = {
         key_hash: keyHash,
         email,
         plan: "free",
@@ -638,7 +676,7 @@ app.get("/api/v1/auth/me", async (req, res) => {
   }
 });
 
-const pkgVersion = require("./package.json").version;
+const pkgVersion = require(path.join(PROJECT_ROOT, "api", "package.json")).version;
 app.get("/health", (req, res) =>
   res.json({ status: "ok", version: pkgVersion }),
 );

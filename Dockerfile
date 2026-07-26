@@ -11,10 +11,12 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 COPY api/package*.json ./
-RUN npm install --omit=dev
+RUN npm install
 COPY api/ ./
+RUN npx tsc
+RUN npm prune --omit=dev
 COPY landing/ /landing/
 COPY demo-invoice.html /app/
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["node", "dist/server.js"]

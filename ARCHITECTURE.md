@@ -9,7 +9,7 @@
                                      │ Authorization: Bearer <key>
                                      v
                      ┌───────────────┴───────────────┐
-                     │       Express API (server.js)  │
+                      │       Express API (server.ts)   │
                      │                               │
                      │   ┌───────────────────────┐   │
                      │   │    Rate Limiter         │   │
