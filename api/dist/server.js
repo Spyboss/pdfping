@@ -61,10 +61,12 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "fonts.googleapis.com"],
+            styleSrc: ["'self'", "fonts.googleapis.com", "'unsafe-inline'"],
+            styleSrcAttr: ["'unsafe-inline'"],
             fontSrc: ["fonts.gstatic.com"],
             scriptSrc: ["'self'", "unpkg.com", "'unsafe-inline'"],
-            imgSrc: ["'self'", "data:"],
+            scriptSrcAttr: ["'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "blob:"],
             connectSrc: ["'self'", "https://*.supabase.co"],
             frameAncestors: ["'none'"],
             baseUri: ["'self'"],
