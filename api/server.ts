@@ -683,6 +683,12 @@ app.get("/health", (req, res) =>
   res.json({ status: "ok", version: pkgVersion }),
 );
 
+// Catch-all for client-side routing: serve index.html for non-API GET requests
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api/")) return next();
+  res.sendFile(path.join(LANDING_DIR, "index.html"));
+});
+
 app.use((err, req, res, next) => {
   if (err.type === "entity.parse.failed") {
     return res.status(400).json({ error: "Invalid JSON in request body" });
