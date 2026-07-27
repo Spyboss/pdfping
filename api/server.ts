@@ -67,7 +67,7 @@ app.use(
         styleSrc: ["'self'", "fonts.googleapis.com", "'unsafe-inline'"],
         styleSrcAttr: ["'unsafe-inline'"],
         fontSrc: ["fonts.gstatic.com"],
-        scriptSrc: ["'self'", "unpkg.com", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "unpkg.com", "https://static.cloudflareinsights.com", "'unsafe-inline'"],
         scriptSrcAttr: ["'unsafe-inline'"],
         imgSrc: ["'self'", "data:", "blob:"],
         connectSrc: ["'self'", "https://*.supabase.co"],
